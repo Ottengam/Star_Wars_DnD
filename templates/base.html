@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Star Wars Wiki{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <style>
+    </style>
+</head>
+<body>
+    <nav class="sw-navbar">
+        <div class="navbar-container">
+            <!-- Логотип справочника слева (на мобильных он встанет рядом с кнопкой) -->
+            <a href="/" class="nav-logo">Квидухаб.GAMES</a>
+
+            <!-- Скрытый чекбокс-триггер для открытия меню -->
+            <input type="checkbox" id="menu-toggle" class="menu-toggle-checkbox">
+
+            <!-- Кнопка-гамбургер (лейбл для чекбокса) -->
+            <label for="menu-toggle" class="menu-hamburger">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </label>
+
+            <div class="nav-menu">
+                <a href="#" class="nav-link">Главная</a>
+                <a href="{% url 'wiki:race_list' %}" class="nav-link active">Расы</a>
+                <a href="#" class="nav-link">Классы</a>
+                <a href="#" class="nav-link">Сила</a>
+                <a href="#" class="nav-link">Снаряжение</a>
+                <a href="#" class="nav-link">Планеты</a>
+                <a href="#" class="nav-link">Техника</a>
+            </div>
+        </div>
+    </nav>
+    <main class="main-container">
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>

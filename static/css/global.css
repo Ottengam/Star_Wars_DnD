@@ -1,0 +1,419 @@
+/* ==========================================
+   * ПОДКЛЮЧЕНИЕ ШРИФТОВ *
+============================================= */
+/*Шрифт Russo One*/
+@font-face {
+    font-family: 'Russo One';
+    src: url('../fonts/RussoOne-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Exo 2';
+    src: url('../fonts/Exo2-Regular.woff2') format('woff2');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Exo 2';
+    src: url('../fonts/Exo2-Bold.woff2') format('woff2');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Exo 2';
+    src: url('../fonts/Exo2-Italic.woff2') format('woff2');
+    font-weight: normal;
+    font-style: italic;
+}
+
+/* ==========================================
+   * ГЛОБАЛЬНЫЕ НАСТРОЙКИ СТРАНИЦЫ *
+============================================= */
+/*Основные переменные*/
+:root {
+    --sw-gold: #ffe81f;
+    --sw-neon-blue: #00d2ff;
+    --sw-deep-blue: #0055ff;
+    --bg-dark: #050508;
+    --panel-bg: rgba(5, 5, 8, 0.75);
+}
+body {
+    color: var(--sw-gold);
+    font-family: 'Exo 2', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+
+    /* 1. НАСТРОЙКА ФОНА ДЛЯ ПК (Большие экраны) */
+    background-color: var(--bg-dark);
+    background-image:
+         linear-gradient(to bottom, rgba(5, 5, 8, 0) 60vh, var(--bg-dark) 95vh),
+        url('../images/main.jpg');
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: 100% auto; /* Растягиваем ровно во всю ширину */
+    background-attachment: fixed;
+}
+
+.main-container {
+    max-width: 1100px;
+    /* Делаем большой отступ сверху (например, 450px), чтобы контент карточки
+       начинался строго ПОД лицами персонажей на картинке и не закрывал арт */
+    margin: 45vh auto 40px auto;
+    padding: 0 30px 30px 30px;
+
+    /* Включаем эффект матового стекла (Стиль dnd.su / интерфейс SWTOR) */
+    background-color: rgba(13, 13, 19, 0.85);   /* Темный полупрозрачный фон */
+    border: 1px solid rgba(0, 150, 255, 0.15);   /* Тонкая неоновая рамка (цвет Республики/Ситхов) */
+    border-radius: 0 0 12px 12px;
+
+    /* Размытие заднего плана, чтобы детали арта не просвечивали сквозь текст */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);         /* Поддержка для Safari */
+
+    /* Густая тень, чтобы визуально «приземлить» контейнер и отделить его от фона */
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+
+    clip-path: polygon(
+        0% 80px,          /* 1. Точка, где левый скос переходит в широкую часть */
+        20% 80px,         /* 2. Начало подъема левого скоса вверх */
+        25% 0%,           /* 3. Верхняя левая точка трапеции заголовка */
+        75% 0%,           /* 4. Верхняя правая точка трапеции заголовка */
+        80% 80px,         /* 5. Конец спуска правого скоса */
+        100% 80px,        /* 6. Крайняя правая точка над карточками */
+        100% 100%,        /* 7. Правый нижний угол сайта */
+        0% 100%           /* 8. Левый нижний угол сайта */
+    );
+}
+
+/* 2. АДАПТАЦИЯ ФОНА ДЛЯ ТЕЛЕФОНОВ (Экраны меньше 768px) */
+@media (max-width: 768px) {
+    body {
+        /* Полностью выключаем картинку задника. */
+        background-image: none !important;
+        background-color: var(--bg-dark);
+    }
+
+    .main-container {
+        /* На телефонах гигантский отступ в 450px удаляется */
+        margin: 15px auto;
+        padding: 0 10px; /* Сужаем защитные отступы, чтобы уместить больше лора */
+
+        /* ПОЛНОСТЬЮ УБИРАЕМ ЗАДНИК И ВСЕ ЭФФЕКТЫ: */
+        background-color: transparent;    /* Слой становится 100% прозрачным */
+        border: none;                     /* Убираем неоновую рамку */
+        border-radius: 0;                 /* Сбрасываем скругление углов */
+
+        backdrop-filter: none;            /* Отключаем размытие */
+        -webkit-backdrop-filter: none;
+
+        box-shadow: none;                 /* Убираем тень */
+        clip-path: none;                  /* Возвращаем прямоугольную форму */
+    }
+}
+
+/* --- СТИЛИ ДЛЯ НАВИГАЦИИ (ФИКСИРОВАННАЯ ШАПКА) --- */
+.sw-navbar {
+    position: fixed;   /* Фиксирует шапку на экране. */
+    top: 0;            /* Прижимает шапку к самому верхнему краю экрана */
+    left: 0;           /* Прижимает шапку к левому краю */
+    width: 100%;       /* Растягивает панель навигации на всю ширину экрана */
+    z-index: 1000;     /* Слой отображения. Гарантирует, что меню будет поверх карточек и артов */
+    background: rgba(5, 5, 8, 0.85); /* Очень темный, почти черный цвет фона с прозрачностью 90% */
+    backdrop-filter: blur(8px);     /* Эффект матового стекла. Красиво размывает арт, который проходит под меню */
+    border-bottom: 2px solid rgba(0, 85, 255, 0.4); /* Полупрозрачная неоново-синяя рамка снизу */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);      /* Тень под шапкой для отделения от основного контента */
+}
+
+.navbar-container {
+    display: flex;             /* Включает технологию Flexbox */
+    justify-content: center;   /* Выравнивает все ссылки строго по центру панели */
+    max-width: 1200px;         /* Ограничивает максимальную ширину контента меню на огромных мониторах */
+    margin: 0 auto;            /* Центрирует сам контейнер внутри панели sw-navbar */
+    padding: 15px 20px;        /* Внутренние отступы: 15px сверху/снизу и 20px слева/справа */
+}
+
+.nav-link {
+    font-family: 'Russo One', sans-serif; /* Подключает ваш рубленый шрифт для заголовков */
+    color: #ffffff;            /* Базовый цвет текста ссылок — чистый белый */
+    text-decoration: none;     /* Отменяет стандартное подчеркивание ссылки, которое делает браузер */
+    font-size: 1.05rem;        /* Задает размер шрифта (чуть больше стандартного) */
+    text-transform: uppercase; /* Автоматически делает все буквы ЗАГЛАВНЫМИ */
+    letter-spacing: 0.5px;     /* Слегка увеличивает расстояние между буквами для читаемости */
+    transition: all 0.2s ease; /* Плавность анимации при наведении мыши */
+}
+
+/* Эффект наведения мыши на пункт меню */
+.nav-link:hover {
+    color: var(--sw-neon-blue);                  /* При наведении текст плавно меняется на неоново-синий */
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.5); /* Добавляет неоновое синее свечение вокруг букв */
+}
+
+/* Стили для активной вкладки, на которой сейчас находится пользователь (класс .active) */
+.nav-link.active {
+    color: var(--sw-gold);                       /* Красит активную ссылку в фирменный золотой цвет d20 */
+    text-shadow: 0 0 12px rgba(255, 232, 31, 0.6); /* Добавляет яркое золотое свечение вокруг текста */
+}
+
+/* Скрываем логотип и кнопку гамбургера на ПК версии */
+.nav-logo { display: none; }
+.menu-toggle-checkbox { display: none; }
+.menu-hamburger { display: none; }
+
+.nav-menu {
+    display: flex;
+    gap: 25px;
+}
+
+@media (max-width: 768px) {
+    .sw-navbar {
+        position: fixed;   /* Оставляем плашку прикрепленной к верху экрана */
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 0;
+    }
+
+    .navbar-container {
+        /* Переключаем выравнивание: логотип встанет слева, а гамбургер уйдет в правый угол */
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 20px; /* Делаем плашку чуть компактнее по высоте */
+    }
+
+    /* Включаем и оформляем текстовый логотип слева */
+    .nav-logo {
+        display: block; /* Перебиваем display: none с ПК-версии */
+        font-family: 'Russo One', sans-serif;
+        color: var(--sw-gold);
+        text-decoration: none;
+        font-size: 1.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .menu-hamburger {
+        display: flex; /* Перебиваем display: none с ПК-версии */
+        flex-direction: column;
+        justify-content: space-between;
+        width: 22px;
+        height: 16px;
+        cursor: pointer;
+        z-index: 1001; /* Поднимает иконку над выезжающей шторкой, чтобы её всегда было видно */
+    }
+
+    .hamburger-line {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: #ffffff;
+        transition: all 0.3s ease; /* Скорость анимации скручивания в крестик */
+    }
+
+    /* Превращаем горизонтальный ряд ссылок в скрытую вертикальную шторку */
+    .nav-menu {
+        display: flex;
+        flex-direction: column; /* Ссылки выстраиваются ровно друг под друга */
+        align-items: center;
+        gap: 15px; /* Зазор между пунктами меню по вертикали */
+
+        position: fixed;
+        top: -100vh; /* По умолчанию шторка полностью задвинута наверх за пределы экрана */
+        left: 0;
+        width: 100%;
+        height: auto;
+        padding: 70px 0 30px 0; /* Отступ сверху, чтобы ссылки не спрятались под верхнюю плашку */
+
+        background: rgba(5, 5, 8, 0.98); /* Очень плотный темный фон, чтобы контент сайта под ним не просвечивал */
+        border-bottom: 2px solid rgba(0, 85, 255, 0.4); /* Неоновый нижний бортик */
+        transition: top 0.4s ease; /* Скорость плавного выкатывания меню вниз */
+    }
+
+    .nav-link {
+        font-size: 1.15rem; /* На смартфонах увеличиваем шрифт, чтобы по ссылкам было удобно попадать пальцем */
+        width: 100%;
+        text-align: center;
+        padding: 8px 0;
+    }
+
+    /* МАГИЯ СКРЫТОГО ЧЕКБОКСА: когда мы нажимаем на гамбургер, чекбокс активируется и выдвигает шторку */
+    .menu-toggle-checkbox:checked ~ .nav-menu {
+        top: 0;
+    }
+
+    /* АНИМАЦИЯ ИКОНКИ: когда меню открыто, превращаем 3 полоски в аккуратный золотой крестик (X) */
+    .menu-toggle-checkbox:checked ~ .menu-hamburger .hamburger-line:nth-child(1) {
+        transform: translateY(7px) rotate(45deg);
+    }
+    .menu-toggle-checkbox:checked ~ .menu-hamburger .hamburger-line:nth-child(2) {
+        opacity: 0; /* Средняя полоска становится полностью невидимой */
+    }
+    .menu-toggle-checkbox:checked ~ .menu-hamburger .hamburger-line:nth-child(3) {
+        transform: translateY(-7px) rotate(-45deg);
+    }
+
+    /* ИНТЕРАКТИВНОСТЬ: при наведении или нажатии на крестик, он загорается ГОЛУБЫМ */
+    .menu-toggle-checkbox:checked ~ .menu-hamburger:hover .hamburger-line,
+    .menu-toggle-checkbox:checked ~ .menu-hamburger:active .hamburger-line {
+        background-color: var(--sw-neon-blue) !important; /* !important гарантирует перекрашивание */
+        filter: drop-shadow(0 0 5px rgba(0, 210, 255, 0.8));
+    }
+}
+
+
+/* ==========================================
+* УНИВЕРСАЛЬНАЯ ДИЗАЙН-СИСТЕМА ДЛЯ СПРАВОЧНИКОВ WIKI *
+============================================= */
+/* Блок заголовков вверху страницы */
+.wiki-section-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+.wiki-title {
+    font-family: 'Russo One', sans-serif;
+    font-size: 2.5rem;
+    color: var(--sw-gold);
+    text-shadow: 0 0 15px rgba(255, 232, 31, 0.4);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+.wiki-subtitle {
+    color: var(--sw-neon-blue);
+    font-size: 1.1rem;
+    margin-top: 0;
+    letter-spacing: 1px;
+}
+
+/* Общая вертикальная сетка для карточек */
+.wiki-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* Универсальная карточка */
+.wiki-card {
+    display: flex;
+    position: relative;
+    background-color: var(--panel-bg);
+    border: 2px solid rgba(0, 85, 255, 0.4); /* Полупрозрачная синяя рамка */
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+}
+
+/* МАГИЧЕСКИЙ КЛАСС: Растягивает невидимую зону клика на всю карточку */
+.wiki-stretched-link::after {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1; /* Поднимает зону клика над текстом карточки */
+    content: ""; /* Пустой контент, чтобы создать невидимый слой */
+}
+
+/* Эффект наведения мыши на карточку */
+.wiki-card:hover {
+    border-color: var(--sw-gold); /* Рамка вспыхивает золотом */
+    box-shadow: 0 0 25px rgba(255, 232, 31, 0.25); /* Неоновое свечение наружу */
+    transform: translateY(-2px); /* Карточка плавно приподнимается */
+}
+
+/* Блок под картинку */
+.wiki-card-image {
+    width: 180px;
+    min-width: 180px;
+    height: 180px;
+    border-right: 2px solid rgba(0, 85, 255, 0.4);
+    background-color: #000000;
+}
+.wiki-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Идеально вписывает аватар без искажения пропорций */
+    object-position: center 5%;
+}
+
+/* Блок с текстом */
+.wiki-card-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+.wiki-card-title {
+    margin: 0 0 10px 0;
+    font-family: 'Russo One', sans-serif;
+    font-size: 1.6rem;
+}
+.wiki-card-title a {
+    color: var(--sw-neon-blue);
+    text-decoration: none;
+}
+
+/* Описание лора */
+.wiki-card-body {
+    color: #e0e0e0;
+    font-size: 1.05rem;
+    line-height: 1.5;
+    text-align: justify;
+}
+
+/* Предупреждение, если база данных пуста */
+.empty-warning {
+    background-color: rgba(255, 232, 31, 0.05);
+    border: 1px dashed var(--sw-gold);
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: #e0e0e0;
+}
+
+/* Адаптация карточек под экраны телефонов */
+@media (max-width: 768px) {
+    .wiki-section-header {
+        padding-top: 30px !important; /* Создает чистый внутренний воздух сверху текста */
+        margin-bottom: 20px !important; /* Чуть сжимаем отступ снизу */
+    }
+
+    .wiki-card {
+        /* ОСТАВЛЯЕМ картинку и текст в один ряд */
+        flex-direction: row;
+        padding: 10px; /* Делаем внутренние отступы карточки поменьше */
+        gap: 15px; /* Немного сужаем зазор между картинкой и текстом */
+    }
+
+    .wiki-card-image {
+        /* На смартфонах уменьшаем коробку для аватара до аккуратных 80 пикселей */
+        width: 80px;
+        min-width: 80px;
+        height: 80px;
+        border-radius: 6px;
+    }
+
+    .wiki-card-info {
+        padding: 0; /* Убираем лишние отступы у текста, чтобы сберечь место */
+        flex-grow: 1; /* Текст занимает всё оставшееся свободное пространство */
+    }
+
+    .wiki-card-title {
+        font-size: 1.2rem; /* Сжимаем размер букв имени, чтобы они не разрывали строку */
+        margin-bottom: 4px;
+    }
+
+    .wiki-card-body {
+        font-size: 0.9rem; /* Делаем шрифт лора чуть меньше для удобства чтения с телефона */
+        line-height: 1.4;
+        text-align: left !important;
+
+        /* Браузер покажет строго 2 строки текста и сам поставит "..." */
+        /* Обязательный движок для включения обрезки по строкам */
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+    }
+}

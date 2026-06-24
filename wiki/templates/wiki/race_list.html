@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Расы — Star Wars Wiki{% endblock %}
+
+{% block content %}
+<div class="wiki-section-header">
+    <h1 class="wiki-title">Расы Галактики</h1>
+    <p class="wiki-subtitle">Энциклопедия существ и обитателей вселенной</p>
+</div>
+
+<!-- Контейнер для списка рас -->
+<div class="wiki-grid">
+    <!-- Цикл Django: берет каждую расу из базы данных из переменной 'races' -->
+    {% for race in races %}
+        <div class="wiki-card">
+
+            <!-- Левая колонка карточки: Изображение -->
+            <div class="wiki-card-image">
+                {% if race.image %}
+                    <!-- Если у расы в админке загружена картинка -->
+                    <img src="{{ race.image.url }}" alt="{{ race.name }}" class="wiki-img">
+                {% else %}
+                    <!-- Заглушка, если картинки нет -->
+                    <img src="{% static 'images/no-avatar.jpg' %}" alt="Нет фото" class="wiki-img">
+                {% endif %}
+            </div>
+
+            <!-- Правая колонка карточки: Текст и Лор -->
+            <div class="wiki-card-info">
+                <h2 class="wiki-card-title">
+                    <!-- Ссылка на будущую детальную страницу отдельной расы -->
+                    <a href="#" class="wiki-stretched-link">{{ race.name }}</a>
+                </h2>
+
+                <!-- Описание расы из CKEditor 5. Фильтр |safe нужен, чтобы HTML-теги лора отображались как текст, а не кодом -->
+                <div class="wiki-card-body">
+                    {{ race.description|slice:":300"|safe }}...
+                </div>
+            </div>
+
+        </div>
+    {% empty %}
+        <!-- Этот блок сработает, если ты еще не добавил ни одной расы в админке -->
+        <div class="empty-warning">
+            <p>В базе данных пока нет созданных рас.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}
