@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Расы — Star Wars Wiki{% endblock %}
+{% block title %}Расы | Star Wars Wiki{% endblock %}
 
 {% block content %}
 <div class="wiki-section-header">
@@ -30,7 +30,7 @@
             <div class="wiki-card-info">
                 <h2 class="wiki-card-title">
                     <!-- Ссылка на будущую детальную страницу отдельной расы -->
-                    <a href="#" class="wiki-stretched-link">{{ race.name }}</a>
+                    <a href="{% url 'wiki:race_detail' race.id %}" class="wiki-stretched-link">{{ race.name }}</a>
                 </h2>
 
                 <!-- Описание расы из CKEditor 5. Фильтр |safe нужен, чтобы HTML-теги лора отображались как текст, а не кодом -->

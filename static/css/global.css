@@ -32,11 +32,17 @@
 ============================================= */
 /*Основные переменные*/
 :root {
+    --sw-white-muted: #f5f5f5;
     --sw-gold: #ffe81f;
     --sw-neon-blue: #00d2ff;
     --sw-deep-blue: #0055ff;
+    --sw-neon-green: #39ff14;
+    --sw-neon-red: #ff3131;
+    --sw-orange-glow: #ff7700;
     --bg-dark: #050508;
     --panel-bg: rgba(5, 5, 8, 0.75);
+    --panel-bg-light: rgba(255, 255, 255, 0.02);
+    --sw-amber-glow: #ffb421;
 }
 body {
     color: var(--sw-gold);
@@ -58,33 +64,12 @@ body {
 
 .main-container {
     max-width: 1100px;
-    /* Делаем большой отступ сверху (например, 450px), чтобы контент карточки
-       начинался строго ПОД лицами персонажей на картинке и не закрывал арт */
+    /* Делаем большой отступ сверху */
     margin: 45vh auto 40px auto;
-    padding: 0 30px 30px 30px;
+    padding: 0;
 
-    /* Включаем эффект матового стекла (Стиль dnd.su / интерфейс SWTOR) */
-    background-color: rgba(13, 13, 19, 0.85);   /* Темный полупрозрачный фон */
-    border: 1px solid rgba(0, 150, 255, 0.15);   /* Тонкая неоновая рамка (цвет Республики/Ситхов) */
-    border-radius: 0 0 12px 12px;
-
-    /* Размытие заднего плана, чтобы детали арта не просвечивали сквозь текст */
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);         /* Поддержка для Safari */
-
-    /* Густая тень, чтобы визуально «приземлить» контейнер и отделить его от фона */
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
-
-    clip-path: polygon(
-        0% 80px,          /* 1. Точка, где левый скос переходит в широкую часть */
-        20% 80px,         /* 2. Начало подъема левого скоса вверх */
-        25% 0%,           /* 3. Верхняя левая точка трапеции заголовка */
-        75% 0%,           /* 4. Верхняя правая точка трапеции заголовка */
-        80% 80px,         /* 5. Конец спуска правого скоса */
-        100% 80px,        /* 6. Крайняя правая точка над карточками */
-        100% 100%,        /* 7. Правый нижний угол сайта */
-        0% 100%           /* 8. Левый нижний угол сайта */
-    );
+    display: flex;
+    flex-direction: column;
 }
 
 /* 2. АДАПТАЦИЯ ФОНА ДЛЯ ТЕЛЕФОНОВ (Экраны меньше 768px) */
@@ -99,17 +84,6 @@ body {
         /* На телефонах гигантский отступ в 450px удаляется */
         margin: 15px auto;
         padding: 0 10px; /* Сужаем защитные отступы, чтобы уместить больше лора */
-
-        /* ПОЛНОСТЬЮ УБИРАЕМ ЗАДНИК И ВСЕ ЭФФЕКТЫ: */
-        background-color: transparent;    /* Слой становится 100% прозрачным */
-        border: none;                     /* Убираем неоновую рамку */
-        border-radius: 0;                 /* Сбрасываем скругление углов */
-
-        backdrop-filter: none;            /* Отключаем размытие */
-        -webkit-backdrop-filter: none;
-
-        box-shadow: none;                 /* Убираем тень */
-        clip-path: none;                  /* Возвращаем прямоугольную форму */
     }
 }
 
@@ -136,7 +110,7 @@ body {
 
 .nav-link {
     font-family: 'Russo One', sans-serif; /* Подключает ваш рубленый шрифт для заголовков */
-    color: #ffffff;            /* Базовый цвет текста ссылок — чистый белый */
+    color: var(--sw-white-muted);            /* Базовый цвет текста ссылок — чистый белый */
     text-decoration: none;     /* Отменяет стандартное подчеркивание ссылки, которое делает браузер */
     font-size: 1.05rem;        /* Задает размер шрифта (чуть больше стандартного) */
     text-transform: uppercase; /* Автоматически делает все буквы ЗАГЛАВНЫМИ */
@@ -207,7 +181,7 @@ body {
         display: block;
         width: 100%;
         height: 2px;
-        background-color: #ffffff;
+        background-color: var(--sw-white-muted);
         transition: all 0.3s ease; /* Скорость анимации скручивания в крестик */
     }
 
@@ -263,26 +237,56 @@ body {
 
 
 /* ==========================================
-* УНИВЕРСАЛЬНАЯ ДИЗАЙН-СИСТЕМА ДЛЯ СПРАВОЧНИКОВ WIKI *
+* УНИВЕРСАЛЬНАЯ ДИЗАЙН-СИСТЕМА ДЛЯ СПРАВОЧНИКОВ *
 ============================================= */
 /* Блок заголовков вверху страницы */
 .wiki-section-header {
     text-align: center;
-    margin-bottom: 40px;
+    margin-bottom: -1px;
+    align-self: center;
+
+    background-image: linear-gradient(rgba(13, 13, 19, 0.85), rgba(13, 13, 19, 0.85)), url('../images/bg.jpg');
+    background-repeat: repeat;
+
+    position: relative;
+    z-index: 3;
+
+    padding: 0px 45px;
+    margin-bottom: -5px;
+
+    /* 1. Делаем верхнюю рамку ТОЧНО ТАКОЙ ЖЕ толщины и цвета, как у .wiki-grid.
+       Теперь цвет rgba(0, 150, 255, 0.15) совпадёт пиксель в пиксель. */
+    border-top: 1px solid rgba(0, 150, 255, 0.15);
+
+    /* 2. Добавляем мягкое внутреннее неоновое свечение (как inset-тень у прямоугольника),
+       чтобы верхняя плашка не казалась плоской на фоне объёмного низа. */
+    box-shadow: inset 0 0 15px 0 rgba(0, 150, 255, 0.05);
+
+    clip-path: polygon(
+        40px 0,
+        calc(100% - 40px) 0,
+        100% 100%,
+        0 100%
+    );
 }
+
 .wiki-title {
     font-family: 'Russo One', sans-serif;
     font-size: 2.5rem;
     color: var(--sw-gold);
     text-shadow: 0 0 15px rgba(255, 232, 31, 0.4);
     text-transform: uppercase;
-    margin-bottom: 5px;
+    margin-bottom: 1px;
+    line-height: 0.9;
+    margin-top: 15px;
 }
 .wiki-subtitle {
     color: var(--sw-neon-blue);
     font-size: 1.1rem;
     margin-top: 0;
     letter-spacing: 1px;
+    line-height: 1.1;
+    margin-bottom: 15px;
 }
 
 /* Общая вертикальная сетка для карточек */
@@ -290,6 +294,22 @@ body {
     display: flex;
     flex-direction: column;
     gap: 25px;
+
+    width: 100%;
+    position: relative;
+    z-index: 1;
+
+    background-image: linear-gradient(rgba(13, 13, 19, 0.85), rgba(13, 13, 19, 0.85)), url('../images/bg.jpg');
+    background-repeat: repeat;
+
+    padding: 30px 30px 30px 30px;
+    box-sizing: border-box;
+
+    border-radius: 15px;
+    border: 2px solid rgba(0, 150, 255, 0.15);
+    box-shadow:
+        inset 0 0 20px 0 rgba(0, 150, 255, 0.08),
+        0 20px 50px 0 rgba(0, 0, 0, 0.85);
 }
 
 /* Универсальная карточка */
@@ -376,7 +396,13 @@ body {
 @media (max-width: 768px) {
     .wiki-section-header {
         padding-top: 30px !important; /* Создает чистый внутренний воздух сверху текста */
-        margin-bottom: 20px !important; /* Чуть сжимаем отступ снизу */
+        margin-bottom: 5px !important; /* Чуть сжимаем отступ снизу */
+
+        clip-path: none;
+        background-image: none !important;
+
+        border-top: none;
+        box-shadow: none;
     }
 
     .wiki-card {
@@ -416,4 +442,681 @@ body {
         -webkit-line-clamp: 2;
         overflow: hidden;
     }
+}
+
+/* Классы для страничек рас */
+.race-profile-image {
+    width: 100%;
+    max-width: 320px; /* Ограничиваем ширину, чтобы портрет на весь экран ПК не растягивался огромным баннером */
+    height: 100%;
+
+    border-radius: 8px; /* Скругление углов под стиль твоих карточек */
+    overflow: hidden;
+
+    /* Тонкая неоновая рамка в твоем интерфейсном цвете */
+    border: 1px solid rgba(0, 210, 255, 0.25);
+
+    /* Многослойный эффект: жесткая тень + мягкое глубокое синее свечение */
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.8),
+        0 0 20px rgba(0, 85, 255, 0.15);
+
+    box-sizing: border-box;
+    flex-shrink: 0;
+}
+
+.race-profile-image img {
+    width: 100%;
+    display: block;
+    object-fit: cover;
+
+    /* Легкий Sci-Fi контраст для атмосферы бортового компьютера */
+    filter: brightness(0.95) contrast(1.05);
+    transition: filter 0.3s ease;
+}
+
+/* Эффект активации экрана при наведении */
+.race-profile-image:hover img {
+    filter: brightness(1.05) contrast(1.1);
+}
+
+.sidebar-section {
+    /* Фирменный полупрозрачный фон бортового терминала */
+    background: var(--panel-bg);
+
+    /* Тонкая неоновая рамка (голубая, как на карточках списка) */
+    border: 1px solid rgba(0, 210, 255, 0.15);
+    border-radius: 12px;
+
+    /* Внутренние отступы, чтобы контент не лип к границам таблицы */
+    padding: 25px;
+
+    /* Эффект многослойной глубины: внешняя темная тень + мягкое внутреннее синее свечение */
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px rgba(0, 85, 255, 0.05);
+
+    /* Эффект матового стекла (размытие того, что находится за панелью) */
+    backdrop-filter: blur(10px);
+
+    /* Защита геометрии: рамки и отступы не распирают ширину элемента */
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.sidebar-title {
+    font-size: 1.1rem;
+
+    /* Твой фирменный каноничный золотой цвет */
+    color: var(--sw-gold);
+
+    /* Переводим в верхний регистр (КАПС) */
+    text-transform: uppercase;
+    /* Фирменная разрядка (отступы между буквами) бортового компьютера */
+    letter-spacing: 2px;
+    text-align: center;
+
+    /* Обнуляем стандартные браузерные отступы и задаем свои */
+    margin-top: 0;
+    margin-bottom: 25px;
+
+    /* Аккуратный внутренний отступ снизу под текст */
+    padding-bottom: 12px;
+
+    width: auto;
+
+    /* Тонкая пунктирная линия под заголовком, которая отделит его от контента */
+    position: relative; /* Нужно для позиционирования диода */
+    border-bottom: 2px solid rgba(0, 210, 255, 0.4); /* Сплошная приглушенная линия */
+    border-image: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 210, 255, 0.45),
+        var(--sw-neon-blue),
+        var(--sw-neon-blue),
+        rgba(0, 210, 255, 0.45),
+        transparent 100%
+    ) 1;
+    box-sizing: border-box;
+}
+
+.sidebar-title::before {
+    content: '';
+    position: absolute;
+    bottom: -4px; /* Сажаем ровно на линию */
+
+    left: 50%;
+
+    width: 6px;
+    height: 6px;
+    background: var(--sw-neon-blue);
+    border-radius: 50%;
+    box-shadow: 0 0 10px 2px var(--sw-neon-blue);
+}
+
+.detail-badges-grid {
+    display: flex;
+    flex-direction: column;
+    color: var(--sw-white-muted);
+
+    /* Задаем технологичный Sci-Fi зазор в 12 пикселей */
+    gap: 12px;
+
+    /* Растягиваем сетку на всю доступную ширину внутри плашки */
+    width: 100%;
+
+    /* Делаем небольшой аккуратный отступ сверху от нашей неоновой линии */
+    margin-top: 15px;
+
+    box-sizing: border-box;
+}
+
+.stat-row {
+    /* Делаем плашку флекс-контейнером */
+    display: flex;
+    /* Магия: разносим название влево, а цифру бонуса строго вправо */
+    justify-content: space-between;
+    align-items: center;
+
+    /* Тонкая, едва заметная разделительная линия снизу между характеристиками */
+    border-bottom: 1px dashed rgba(0, 210, 255, 0.08);
+
+    /* Уютные отступы, чтобы строки легко читались и не слипались */
+    padding: 8px 4px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Убираем нижнее подчеркивание у самой последней характеристики (Харизма),
+   чтобы интерфейс выглядел аккуратно */
+.stat-row:last-of-type {
+    border-bottom: none;
+}
+
+/* Название характеристики (Сила, Ловкость и т.д.) */
+.stat-row span {
+    font-size: 0.95rem;
+    text-shadow: 0 0 6px rgba(0, 210, 255, 0.25);
+}
+
+/* ОБЩИЙ СТИЛЬ ДЛЯ ЦИФР ХАРАКТЕРИСТИК */
+.stat-row strong {
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    /* ГОЛУБОЙ ПРИ 0: Базовый цвет для обычного strong без дополнительных классов */
+    color: var(--sw-neon-blue);
+    text-shadow: 0 0 10px rgba(0, 210, 255, 0.6);
+}
+
+/* ЗЕЛЕНЫЙ ПРИ + (Твой класс .pos из шаблона Django) */
+.stat-row strong.pos {
+    color: var(--sw-neon-green); /* Яркий неоново-зеленый бафф */
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.6);
+}
+
+/* КРАСНЫЙ ПРИ - (Твой класс .neg из шаблона Django) */
+.stat-row strong.neg {
+    color: var(--sw-neon-red); /* Насыщенный ситхский красный дебафф */
+    text-shadow: 0 0 10px rgba(255, 49, 49, 0.6);
+}
+
+.galaxy-link {
+    color: var(--sw-orange-glow);
+    text-shadow: 0 0 6px var(--sw-orange-glow);
+    text-decoration: none;
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    display: inline-flex;
+    align-items: center;
+
+    /* Добавляем тонкий золотой пунктир, который тоже намекает на кликабельность */
+    border-bottom: 1px dashed rgba(255, 232, 31, 0.55);
+
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ЭФФЕКТ НАВЕДЕНИЯ МЫШИ (АКТИВАЦИЯ ХАБА НАВИГАЦИИ) */
+.galaxy-link:hover {
+    color: var(--sw-white-muted); /* Слово при наведении вспыхивает контрастным белым */
+    border-bottom: 1px solid #ffffff; /* Пунктир сшивается в сплошную белую линию */
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+    transform: translateY(-1px); /* Легкий тактильный Sci-Fi подскок */
+}
+
+.skills-columns-wrapper {
+    display: grid;
+    /* Умная сетка: сама создаст 2 колонки, но если колонка останется одна —
+       растянет её на всю ширину, сохраняя идеальный Sci-Fi баланс */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+
+    /* Расстояние между левым и правым тактическими отсеками */
+    column-gap: 40px;
+    row-gap: 20px;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.skill-column-box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    box-sizing: border-box;
+
+    background: var(--panel-bg-light); /* Ультра-легкий фон */
+    border-left: 2px solid var(--sw-gold); /* Золотая тактическая линия слева */
+    padding: 6px 15px 10px 0; /* Внутренние отступы, чтобы текст не прилипал */
+    border-radius: 0 4px 4px 0;
+}
+
+.skill-group-title {
+    /* Используем общий шрифт твоей страницы */
+    font-size: 0.85rem;
+    font-weight: 700;
+
+    /* Переводим буквы в верхний регистр (КАПС) для стиля системного меню */
+    text-transform: uppercase;
+    /* Легкая космическая разрядка букв */
+    letter-spacing: 1.5px;
+
+    /* Приглушенный стальной цвет с прозрачностью, чтобы текст не спорил с золотом */
+    color: var(--sw-white-muted);
+
+    /* Отступы: сверху аккуратно отбиваемся от лазерной линии,
+       снизу даем зазор до будущего контейнера с кнопками */
+    margin-top: 5px;
+    margin-bottom: 10px;
+
+    padding-bottom: 12px;
+    padding-left: 15px;
+
+    /* Настройки геометрии */
+    width: 100%;
+    box-sizing: border-box;
+
+    border-bottom: 2px solid rgba(0, 210, 255, 0.4); /* Сплошная приглушенная линия */
+    border-image: linear-gradient(to right,
+        var(--sw-gold) 0%,
+        var(--sw-gold) 75%,
+        rgba(255, 232, 31, 0.3) 90%,
+        transparent 100%
+    ) 1;
+}
+
+.skill-tag {
+    display: flex;
+    flex-direction: column;
+
+    /* Задаем аккуратный игровой зазор в 8 пикселей между будущими чипами */
+    gap: 8px;
+
+    width: 100%;
+
+    /* Делаем отступ снизу до следующей текстовой категории */
+    margin-top: 5px;
+    box-sizing: border-box;
+
+    padding-left: 15px;
+}
+
+/* Оформление фиксированных навыков в стиле ваших карточек */
+.skill-tag-detail {
+    display: block;
+    font-size: 0.95rem;
+    color: var(--sw-neon-blue);
+}
+
+/* Контейнер для всего списка способностей */
+.detail-traits-list {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Зазор между способностями */
+    margin-top: 25px;
+    box-sizing: border-box;
+}
+
+/* Переводим карточку на сетку grid для идеального горизонтального выравнивания */
+.detail-trait-card {
+    display: grid;
+    /* Левая колонка для названия фиксированная (например, 220px),
+       правая автоматически забирает все оставшееся место */
+    grid-template-columns: 220px 1fr;
+    column-gap: 30px; /* Зазор между названием и описанием */
+    align-items: stretch;
+    width: 100%;
+    box-sizing: border-box;
+
+    background: var(--panel-bg-light);
+    border: 1px solid rgba(0, 210, 255, 0.1);
+    border-radius: 4px;
+    padding: 15px 20px;
+}
+
+/* Шапка больше не флекс, просто обнуляем ее, чтобы не ломать сетку */
+.dt-header {
+    display: flex;
+    align-items: center; /* Центрирует название по вертикали, если описание длинное */
+
+    /* Вертикальная линия-разделитель переезжает сюда */
+    border-right: 1px solid rgba(0, 210, 255, 0.15);
+    padding-right: 20px;
+}
+
+/* Название способности (стиль как у ключей в характеристиках) */
+.dt-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--sw-white-muted); /* Строгий белый цвет, убираем золото */
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+/* Описание способности (стиль как у значений в характеристиках) */
+.dt-desc {
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--sw-neon-blue); /* Переводим в чистый неоновый синий */
+    margin: 0; /* Убираем браузерные отступы */
+}
+
+/* Главный контейнер — выстраивает блоки строго в ОДИН горизонтальный ряд */
+.settlements-tags {
+    display: flex;
+    gap: 16px;
+    margin-top: 20px;
+    align-items: stretch;
+}
+
+/* Каждая категория — теперь компактный маленький виджет */
+.planet-category-row {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;              /* Компактный внутренний отступ */
+    flex: 1;        /* Убираем растягивание! Карточка занимает ровно столько места, сколько нужно её тексту */
+
+    /* Делаем дизайн аккуратным, приглушая слишком яркие рамки */
+    background: var(--panel-bg-light);;
+    border: 1px solid rgba(0, 210, 255, 0.1);
+    border-radius: 4px;
+    padding: 10px 14px 16px 14px;      /* Уменьшаем внутренние паддинги, чтобы сжать карточки */
+}
+
+/* Белый заголовок внутри маленькой карточки */
+.planet-lore-status {
+    font-size: 0.85rem;      /* Немного уменьшаем шрифт для компактности */
+    color: var(--sw-white-muted);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-align: center;
+
+    min-height: 1.92rem;
+    display: flex;             /* Включаем Flexbox прямо внутри самого тега span */
+    align-items: center;       /* Опускает текст ровно по центру вертикальной оси */
+    justify-content: center;
+
+    border-bottom: 1px solid rgba(0, 168, 204, 0.2);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+}
+
+/* Список планет внутри маленькой карточки */
+.planet-row {
+    display: flex;
+    flex-direction: column; /* Планеты по-прежнему падают аккуратным списком вниз */
+    gap: 6px;
+    align-items: center;
+}
+
+/* Оранжевая ссылка на планету */
+.planet-row .galaxy-link {
+    font-weight: 600;
+    font-size: 0.85rem;     /* Делаем шрифт чуть компактнее под стать карточке */
+    white-space: nowrap;
+    text-align: center;
+}
+
+/* Общий контейнер цитаты */
+.race-blockquote {
+    position: relative;
+    margin: 2.5rem 0; /* Хороший отступ сверху от миров и снизу до Общих сведений */
+    padding: 20px 25px 20px 35px;
+    background: var(--panel-bg-light); /* Едва заметный сине-голубой неоновый фон */
+
+    /* Делаем аккуратную рамку с акцентом на левый край */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 12%, transparent);
+    border-left: 4px solid var(--sw-gold); /* Яркая золотая вертикальная черта слева */
+
+    box-shadow: inset 0 0 15px rgba(0, 168, 204, 0.03);
+    max-width: 100%;
+}
+
+/* Стилизация самого текста цитаты */
+.quote-text {
+    margin: 0 0 10px 0;
+    font-size: 1.05rem;
+    font-style: italic; /* Курсив для ощущения живой речи */
+    line-height: 1.5;
+
+    /* Делаем цвет золотым, но чуть приглушенным, чтобы он мягко светился на темном фоне */
+    color: var(--sw-amber-glow);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--sw-amber-glow) 35%, transparent);
+}
+
+/* Стилизация автора цитаты */
+.quote-author {
+    display: block;
+    font-family: 'Courier New', Courier, monospace; /* Военный моноширинный шрифт логов */
+    font-size: 0.85rem;
+    font-style: normal;
+    font-weight: bold;
+    letter-spacing: 1px;
+
+    /* Цвет автора делаем системным белым или тускло-голубым */
+    color: color-mix(in srgb, var(--sw-neon-blue) 60%, transparent);
+    text-align: left;
+}
+
+/* Sci-Fi декоративные засечки на углах плашки цитаты */
+.quote-decor {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 30%, transparent); /* Тонкий синий неон */
+}
+.quote-decor.top-right {
+    top: -1px;
+    right: -1px;
+    border-left: none;
+    border-bottom: none;
+}
+
+/* ==========================================================================
+   РАЗДЕЛ: Общие сведения (Текстовый лор расы)
+   ========================================================================== */
+
+/* Главный контейнер, который ты скинул */
+.lore-block {
+    margin-bottom: 3rem;             /* Увеличиваем отступ снизу для веса блока */
+    width: 100%;                     /* Занимает всю ширину текстовой зоны */
+    position: relative;
+
+    box-sizing: border-box;
+
+    /* Оформление панели в стиле SWTOR */
+    background: var(--panel-bg);     /* Твоя базовая темно-синяя или черная подложка */
+    padding: 0 30px 25px 30px;                 /* Внутренние отступы, чтобы текст не лип к рамке */
+
+    /* Настраиваем аккуратную неоново-синюю рамку как на скриншоте */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 20%, transparent);
+    border-radius: 6px;              /* Технологичное легкое скругление углов */
+    overflow: hidden;
+
+    /* Внутреннее неоновое свечение по углам карточки */
+    box-shadow:
+        inset 0 0 20px rgba(0, 180, 216, 0.04),
+        0 4px 15px rgba(0, 0, 0, 0.4); /* Внешняя глубокая тень для объема */
+}
+
+/* Заголовок h2 из твоего HTML-кода */
+.lore-section-title {
+    display: inline-block;
+    font-size: 1.25rem;               /* Крупный размер для основного заголовка */
+    font-weight: 700;                /* Плотное, жирное начертание */
+    color: var(--sw-gold);     /* Тот самый зафиксированный янтарный цвет */
+    text-shadow: 0 0 6px rgba(255, 196, 0, 0.5);
+    letter-spacing: 0.05em;          /* Легкий межбуквенный интервал в стиле интерфейсов */
+
+    background: linear-gradient(90deg,
+        rgba(0, 168, 204, 0.08) 0%,
+        rgba(0, 168, 204, 0.02) 60%,
+        transparent 100%
+    );
+
+    padding: 10px 45px 10px 25px;    /* Большой отступ справа под срез, аккуратный слева */
+    margin: 0 0 22px -30px;        /* Прижимаем плашку вплотную к левому краю рамки карточки */
+
+
+    text-transform: uppercase;            /* Сохраняем регистр «Общие сведения», как на макете */
+
+    position: relative;
+    z-index: 2;
+
+    border: 1px solid rgba(0, 168, 204, 0.35);
+
+    /* И начисто убираем верх и лево через none, как ты и говорил */
+    border-top: none;
+    border-left: none;
+
+    /* Скругление правого нижнего угла */
+    border-bottom-right-radius: 6px;
+
+    box-shadow: inset 10px 0 20px rgba(0, 210, 255, 0.08);
+}
+.lore-section-title::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--sw-neon-blue);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--sw-neon-blue) 60%, transparent);
+    border-radius: 4px 0 0 0;
+}
+/* Крошечный технический маркер-точка в конце плашки */
+.lore-section-title::after {
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 3px;
+    background: rgba(0, 168, 204, 0.5);
+    box-shadow: 0 0 6px rgba(0, 168, 204, 0.8);
+    border-radius: 50%;
+}
+
+/* Контейнер вывода CKEditor из твоего HTML-кода */
+.lore-block .ck-content {
+    font-size: 1.1rem;              /* Компактный, аккуратный размер для лора */
+    line-height: 1.65;                /* Комфортный межстрочный интервал для чтения */
+    color: var(--sw-white-muted);
+
+    text-align: justify;             /* Выравнивание по ширине для строгого книжного вида */
+    hyphens: auto;
+    display: block;
+}
+.lore-block .ck-content p {
+    /* Делаем сочный, заметный отступ между абзацами */
+    margin-bottom: 1.4rem;
+}
+.lore-block .ck-content p:last-child {
+    margin-bottom: 0;
+}
+
+
+/* СТИЛИЗУЕМ ОБЕРТКУ КАРТИНКИ (Она теперь управляет обтеканием и позицией) */
+.lore-block .ck-content figure.image {
+    float: right;
+    display: block;
+
+    /* Сохраняем оригинальную ширину картинки из админки */
+    width: 252px;
+
+    /* ТОЧНЫЙ ГЕОМЕТРИЧЕСКИЙ РАСЧЕТ СДВИГА В УГОЛ */
+    /* Вылетаем вверх мимо высоты заголовка (46px) и его margin-bottom (22px) */
+    margin-top: -87px;
+    /* Пробиваем правый паддинг карточки лора (30px) */
+    margin-right: -30px;
+
+    /* Безопасные зазоры до текста слева и снизу */
+    margin-left: 14px;
+    margin-bottom: 14px;
+}
+
+/* СТИЛИ САМОЙ КАРТИНКИ (Чистый Sci-Fi декор рамок) */
+.lore-block .ck-content figure.image img {
+    display: block;
+    width: 100%;       /* Занимает все 252px своей обертки figure */
+    height: auto;
+    object-fit: cover;
+
+    background: var(--panel-bg-light);
+
+    /* Оформление рамки портрета в стиле твоих верхних таблиц */
+    border-left: 1px solid rgba(0, 168, 204, 0.35);
+    border-bottom: 1px solid rgba(0, 168, 204, 0.35);
+    border-bottom-left-radius: 4px;
+    box-shadow:
+        inset 0 0 15px rgba(0, 168, 204, 0.1),
+        0 0 12px rgba(0, 168, 204, 0.15),
+        0 4px 20px rgba(0, 0, 0, 0.8);
+}
+
+/* Технический сброс для стабильности верстки */
+/* Если вдруг текст лора окажется короче высоты картинки, эта строчка защитит нижнюю рамку карточки от излома */
+.lore-block .ck-content::after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.ability-desc {
+    color: var(--sw-white-muted);
+    line-height: 1.65;
+    font-size: 1.05rem;
+    text-align: justify;
+    margin-top: 15px;
+}
+
+/* Главный контейнер для группировки списков */
+.ability-list {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ability-card {
+    background: var(--panel-bg-light);
+    border: 1px solid rgba(0, 210, 255, 0.1);
+    border-radius: 4px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    padding: 12px 0;
+}
+
+.ability-card-top {
+    display: inline-block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--sw-gold);
+    font-weight: bold;
+
+    background: rgba(255, 232, 31, 0.05); /* 5% прозрачности твоего фирменного золота для фона */
+
+    /* Рамка вокруг ярлыка */
+    border: 1px solid color-mix(in srgb, var(--sw-gold) 20%, transparent);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+
+    /* Внутренние отступы самого ярлыка, чтобы текст внутри "дышал" */
+    padding: 4px 10px;
+
+    /* Запрещаем тексту заголовка переноситься на две строчки, если экран сожмется */
+    white-space: nowrap;
+
+    margin-bottom: 10px;
+}
+
+.ability-body {
+    display: flex;
+    flex-wrap: wrap; /* Разрешаем именам автоматически переноситься на новые строки */
+    gap: 6px; /* Наш идеальный плотный Sci-Fi шаг между плашками */
+
+    /* Задаём внутренние отступы: 0 сверху (так как марджин заголовка уже оттолкнул блок),
+       15px по бокам от синих рамок карточки, и 4px снизу для симметрии */
+    padding: 0 15px 4px 15px;
+}
+
+/* Базовый дизайн плашки (для любого элемента) */
+.ability-badge {
+    /* Легкая стеклянная дымка датапада, которую ты одобрил */
+    background: var(--panel-bg-light);
+
+    /* Тонкая рамка: подмешиваем 15% неонового синего к прозрачности */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 15%, transparent);
+
+    /* Возвращаем именам приглушенный белый цвет, чтобы они выделились из золота карточки */
+    color: var(--sw-neon-blue);
+
+    /* Идеальные внутренние отступы: буквы больше не зажаты рамками */
+    padding: 5px 11px;
+    border-radius: 4px;
+    font-size: 0.9rem;
 }

@@ -55,7 +55,7 @@ class RaceTraitAdmin(admin.ModelAdmin):
 class RaceAdmin(admin.ModelAdmin):
     list_display = ('get_image', 'name', 'description', 'homeworld', 'get_d20_stats', 'size', 'speed')
     search_fields = ('name', 'description')
-    filter_horizontal = ('settlements', 'race_traits')
+    filter_horizontal = ('traits', 'colonies', 'enclaves', 'outposts', 'integrated_worlds')
 
     def get_d20_stats(self, obj):
         from django.utils.safestring import mark_safe
@@ -93,11 +93,8 @@ class RaceAdmin(admin.ModelAdmin):
 
     get_d20_stats.short_description = 'Модификаторы d20'
 
+    @admin.display(description='Аватар')
     def get_image(self, obj):
         if obj.image:
             # Генерируем HTML-тег картинки с фиксированной высотой 40 пикселей
             return format_html('<img src="{}" style="height: 40px; border-radius: 4px;" />', obj.image.url)
-        return "Нет картинки"
-
-    # Меняем название колонки в админке с технического 'get_image' на понятное русское
-    get_image.short_description = 'Аватар'

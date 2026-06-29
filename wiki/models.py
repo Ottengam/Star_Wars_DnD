@@ -4,6 +4,8 @@ from django.db import models
 from multiselectfield import MultiSelectField
 from django_ckeditor_5.fields import CKEditor5Field
 
+import mechanics.models
+
 
 class Region(models.Model):
     """
@@ -180,6 +182,7 @@ class Planet(models.Model):
         BARREN = 'barren', 'Бесплодная пустошь / Скалистый'
         DESOLATED = 'desolated', 'Мертвый / Выжженный Силой'
         TWILIGHT = 'twilight', 'Сумеречный мир'
+        GAS_GIANT = 'gas_giant', 'Газовый гигант'
 
     name: str = models.CharField(max_length=40, unique=True, verbose_name="Название планеты")
     description: str = models.TextField(verbose_name="Описание планеты")
@@ -265,40 +268,6 @@ class SkillChoices(models.TextChoices):
     COMMERCE = 'commerce', 'Торговля'
 
 
-class RaceTrait(models.Model):
-    """
-    Модель для конкретных способностей и механик расы.
-    Используется программными модулями для применения спец-эффектов к персонажу.
-
-    :cvar code_name: Технический идентификатор (маркер) особенности для формул и кода.
-    :cvar name: Название особенности, лимит 50 символов.
-    :cvar description: Игровое описание механики способностей для пользователей.
-    """
-    code_name: str = models.CharField(max_length=50, unique=True, verbose_name="Кодовое имя для формул/кода")
-    name: str = models.CharField(max_length=50, verbose_name="Название особенности")
-    description: str = models.TextField(verbose_name="Игровое описание механики")
-
-    def __str__(self) -> str:
-        """
-            Превращает сложный объект особенности в понятную строку.
-
-            :return: Текстовое название текущей особенности.
-        """
-        return self.name
-
-    class Meta:
-        """
-            Мета-настройки для управления поведением таблицы расовых особенностей.
-
-            :cvar verbose_name: Локализованное имя сущности в единственном числе.
-            :cvar verbose_name_plural: Локализованное имя сущности во множественном числе.
-            :cvar ordering: Поле, по которому применяется автоматическая сортировка.
-        """
-        verbose_name = "Расовая особенность (Механика)"
-        verbose_name_plural = "Расовые особенности (Механики)"
-        ordering = ['name']
-
-
 class Race(models.Model):
     """
     Модель для хранения информации о расах Галактики.
@@ -308,15 +277,22 @@ class Race(models.Model):
     :cvar name: Название расы (вида), лимит 25 символов.
     :cvar description: Историческая справка расы.
     :cvar name_plural_genitive: Название расы (вида) во множественном числе родительном падеже.
+    :cvar names: Краткое описание того, как раса формирует имена.
+    :cvar male_names: Список доступных мужских имён.
+    :cvar female_names: Список доступных женских имён.
+    :cvar universal_names: Список имён, подходящих для любого пола.
+    :cvar surnames: Список доступных фамилий.
     :cvar quote: Цитата о расе.
     :cvar quote_author: Автор цитаты.
     :cvar biology: Подробное описание биологии и внешнего вида.
     :cvar culture: Описание общества и культуры.
-    :cvar names: Традиции именования и списки типичных имен.
     :cvar history: Историческая справка и хронология расы.
     :cvar image: Главное изображение расы для карточки (аватар).
     :cvar homeworld: Родная планета расы (защищена от случайного удаления).
-    :cvar settlements: Список планет, на которых раса имеет колонии или поселения.
+    :cvar colonies: Список суверенных колоний расы.
+    :cvar enclaves: Список автономных анклавов расы.
+    :cvar outposts: Список промышленных форпостов расы.
+    :cvar integrated_worlds: Список интегрированных миров расы.
     :cvar str_bonus: Бонус к Силе (STR).
     :cvar dex_bonus: Бонус к Ловкости (DEX).
     :cvar con_bonus: Бонус к Телосложению (CON).
@@ -330,7 +306,7 @@ class Race(models.Model):
     :cvar height_range: Рост расы.
     :cvar weight_range: Вес расы.
     :cvar speed: Базовая скорость передвижения существа в футах.
-    :cvar race_traits: Список программных особенностей и механик расы.
+    :cvar traits: Список особенностей расы.
     """
     class SizeType(models.TextChoices):
         """
@@ -352,18 +328,30 @@ class Race(models.Model):
     quote: str = models.TextField(verbose_name="Цитата")
     quote_author: str = models.CharField(max_length=40, verbose_name="Автор цитаты")
 
+    names: str = models.TextField(verbose_name="Традиции именования")
+    male_names: list[str] | None = models.JSONField(verbose_name="Мужские имена", null=True, blank=True)
+    female_names: list[str] | None = models.JSONField(verbose_name="Женские имена", null=True, blank=True)
+    universal_names: list[str] | None = models.JSONField(verbose_name="Универсальные имена", null=True, blank=True)
+    surnames: list[str] | None = models.JSONField(verbose_name="Фамилии", null=True, blank=True)
+
     # Фиксированные поля с поддержкой картинок и стилей CKEditor 5
     biology: str = CKEditor5Field(config_name='extends', verbose_name="Биология и внешность")
     culture: str = CKEditor5Field(config_name='extends', verbose_name="Общество и культура")
-    names: str = CKEditor5Field(config_name='extends', verbose_name="Расовые имена")
     history: str = CKEditor5Field(config_name='extends', verbose_name="История")
 
     image: str = models.ImageField(upload_to="races/", verbose_name="Главное изображение расы")
 
     homeworld: Planet = models.ForeignKey(Planet, on_delete=models.PROTECT,
                                           related_name="native_races", verbose_name="Родная планета")
-    settlements: models.QuerySet[Planet] = models.ManyToManyField(Planet, blank=True, related_name="settled_races",
-                                                                  verbose_name="Планеты расселения")
+    colonies: models.QuerySet[Planet] = models.ManyToManyField(Planet, blank=True, related_name="colony_races",
+                                                               verbose_name="Суверенные колонии")
+    enclaves: models.QuerySet[Planet] = models.ManyToManyField(Planet, blank=True, related_name="enclave_races",
+                                                               verbose_name="Автономные анклавы")
+    outposts: models.QuerySet[Planet] = models.ManyToManyField(Planet, blank=True, related_name="outpost_races",
+                                                               verbose_name="Промышленные форпосты")
+    integrated_worlds: models.QuerySet[Planet] = models.ManyToManyField(Planet, blank=True,
+                                                                        related_name="integrated_world_races",
+                                                                        verbose_name="Интегрированные миры")
 
     str_bonus: int = models.IntegerField(default=0, verbose_name="Бонус к Силе")
     dex_bonus: int = models.IntegerField(default=0, verbose_name="Бонус к Ловкости")
@@ -387,8 +375,9 @@ class Race(models.Model):
     speed: int = models.PositiveIntegerField(default=30, verbose_name="Базовая скорость (в футах)")
 
     # Связь со справочником программных особенностей (RaceTrait)
-    race_traits: models.QuerySet[RaceTrait] = models.ManyToManyField(RaceTrait, blank=True, related_name="races",
-                                                                     verbose_name="Программные особенности механики")
+    traits: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Trait', blank=True,
+                                                                             related_name="races",
+                                                                             verbose_name="Особенности механики")
 
     def __str__(self) -> str:
         """
