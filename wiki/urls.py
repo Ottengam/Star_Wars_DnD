@@ -4,7 +4,9 @@ from . import views
 app_name = 'wiki'
 
 urlpatterns = [
-    # Путь для списка рас
+    # Модуль отображения общего списка объектов
     path('races/', views.RaceListView.as_view(), name='race_list'),
+
+    # Модуль отображения детальной карточки конкретного объекта
     path('races/<int:pk>/', views.RaceDetailView.as_view(), name='race_detail'),
 ]

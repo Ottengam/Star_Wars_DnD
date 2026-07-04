@@ -1,71 +1,85 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ race.name }} - Расы Галактики | Star Wars Wiki{% endblock %}
+<!-- Мета-заголовок документа с указанием имени объекта и вселенной -->
+{% block title %}{{ race.name }} | Расы: Star Wars | Квидухаб.GAMES{% endblock %}
+
+<!-- Подключение локальных модулей стилей страницы детализации -->
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/datapad.css' %}">
+    <link rel="stylesheet" href="{% static 'css/object-detail.css' %}">
+{% endblock %}
 
 {% block content %}
-<!-- Шапка-трапеция с именем расы в родительском падеже для атмосферы -->
-<div class="wiki-section-header">
-    <h1 class="wiki-title">{{ race.name }}</h1>
-    <p class="wiki-subtitle">Энциклопедия существ и обитателей вселенной</p>
+<!-- Презентационный заголовок раздела базы данных -->
+<div class="datapad-header">
+    <h1 class="datapad-header-title">{{ race.name }}</h1>
+    <p class="datapad-header-subtitle">Энциклопедия существ и обитателей вселенной</p>
 </div>
 
-<!-- Главный контейнер детальной страницы -->
-<div class="wiki-grid">
+<!-- Контейнер детальной карточки объекта -->
+<div class="datapad-body">
+    <!-- Верхний презентационный ряд карточек -->
+    <div class="detail-top-row">
 
-    <div style="display: flex; gap: 25px; align-items: stretch; width: 100%;">
-        <!-- Главное изображение существа -->
-        <div class="race-profile-image">
+        <!-- Компонент графического контейнера аватара -->
+        <div class="detail-avatar">
                 <img src="{{ race.image.url }}" alt="{{ race.name }}">
         </div>
 
-        <!-- Блок d20 модификаторов -->
-        <div class="sidebar-section">
-            <h3 class="sidebar-title">Характеристики</h3>
-            <div class="detail-badges-grid">
-                <div class="stat-row"><span>Сила:</span> <strong class="{% if race.str_bonus > 0 %}pos{% elif race.str_bonus < 0 %}neg{% endif %}">{% if race.str_bonus > 0 %}+{% endif %}{{ race.str_bonus }}</strong></div>
-                <div class="stat-row"><span>Ловкость:</span> <strong class="{% if race.dex_bonus > 0 %}pos{% elif race.dex_bonus < 0 %}neg{% endif %}">{% if race.dex_bonus > 0 %}+{% endif %}{{ race.dex_bonus }}</strong></div>
-                <div class="stat-row"><span>Телосложение:</span> <strong class="{% if race.con_bonus > 0 %}pos{% elif race.con_bonus < 0 %}neg{% endif %}">{% if race.con_bonus > 0 %}+{% endif %}{{ race.con_bonus }}</strong></div>
-                <div class="stat-row"><span>Интеллект:</span> <strong class="{% if race.int_bonus > 0 %}pos{% elif race.int_bonus < 0 %}neg{% endif %}">{% if race.int_bonus > 0 %}+{% endif %}{{ race.int_bonus }}</strong></div>
-                <div class="stat-row"><span>Мудрость:</span> <strong class="{% if race.wis_bonus > 0 %}pos{% elif race.wis_bonus < 0 %}neg{% endif %}">{% if race.wis_bonus > 0 %}+{% endif %}{{ race.wis_bonus }}</strong></div>
-                <div class="stat-row"><span>Харизма:</span> <strong class="{% if race.cha_bonus > 0 %}pos{% elif race.cha_bonus < 0 %}neg{% endif %}">{% if race.cha_bonus > 0 %}+{% endif %}{{ race.cha_bonus }}</strong></div>
+        <!-- Компонент таблицы игровых модификаторов характеристик -->
+        <div class="detail-data-card">
+            <h3 class="detail-card-title">Характеристики</h3>
+            <div class="detail-data-list">
+                <div class="detail-data-row"><span>Сила:</span> <strong class="{% if race.str_bonus > 0 %}pos{% elif race.str_bonus < 0 %}neg{% endif %}">{% if race.str_bonus > 0 %}+{% endif %}{{ race.str_bonus }}</strong></div>
+                <div class="detail-data-row"><span>Ловкость:</span> <strong class="{% if race.dex_bonus > 0 %}pos{% elif race.dex_bonus < 0 %}neg{% endif %}">{% if race.dex_bonus > 0 %}+{% endif %}{{ race.dex_bonus }}</strong></div>
+                <div class="detail-data-row"><span>Телосложение:</span> <strong class="{% if race.con_bonus > 0 %}pos{% elif race.con_bonus < 0 %}neg{% endif %}">{% if race.con_bonus > 0 %}+{% endif %}{{ race.con_bonus }}</strong></div>
+                <div class="detail-data-row"><span>Интеллект:</span> <strong class="{% if race.int_bonus > 0 %}pos{% elif race.int_bonus < 0 %}neg{% endif %}">{% if race.int_bonus > 0 %}+{% endif %}{{ race.int_bonus }}</strong></div>
+                <div class="detail-data-row"><span>Мудрость:</span> <strong class="{% if race.wis_bonus > 0 %}pos{% elif race.wis_bonus < 0 %}neg{% endif %}">{% if race.wis_bonus > 0 %}+{% endif %}{{ race.wis_bonus }}</strong></div>
+                <div class="detail-data-row"><span>Харизма:</span> <strong class="{% if race.cha_bonus > 0 %}pos{% elif race.cha_bonus < 0 %}neg{% endif %}">{% if race.cha_bonus > 0 %}+{% endif %}{{ race.cha_bonus }}</strong></div>
             </div>
         </div>
 
-            <!-- Физические данные и география -->
-        <div class="sidebar-section">
-            <h3 class="sidebar-title">Физиология и Родина</h3>
-            <div class="detail-badges-grid">
-                <div class="stat-row"><span>Размер:</span> <strong>{{ race.get_size_display }}</strong></div>
-                <div class="stat-row"><span>Скорость:</span> <strong>{{ race.speed }} фут</strong></div>
-                {% if race.height_range %}<div class="stat-row"><span>Рост:</span> <strong>{{ race.height_range }}</strong></div>{% endif %}
-                {% if race.weight_range %}<div class="stat-row"><span>Вес:</span> <strong>{{ race.weight_range }}</strong></div>{% endif %}
-                <div class="stat-row"><span>Родная планета:</span> <a href="#" class="galaxy-link">{{ race.homeworld.name }}</a></div>
+        <!-- Компонент таблицы физиологических и географических данных -->
+        <div class="detail-data-card">
+            <h3 class="detail-card-title">Физиология и Родина</h3>
+            <div class="detail-data-list">
+                <div class="detail-data-row"><span>Размер:</span> <strong>{{race.get_size_display}}</strong></div>
+                <div class="detail-data-row"><span>Скорость:</span> <strong>{{race.speed}} футов</strong></div>
+                <div class="detail-data-row"><span>Рост:</span> <strong>{{race.height_range}}</strong></div>
+                <div class="detail-data-row"><span>Вес:</span> <strong>{{race.weight_range}}</strong></div>
+                <div class="detail-data-row"><span>Родная планета:</span> <a href="#" class="db-link">{{race.homeworld.name}}</a></div>
             </div>
         </div>
     </div>
 
-    <!-- Игровые расовые навыки -->
+    <!-- Компонент панели игровых расовых навыков -->
     {% if race.fixed_skills or race.choice_skills %}
-        <div class="sidebar-section">
-            <h3 class="sidebar-title">Расовые навыки</h3>
-            <div class="skills-columns-wrapper">
+        <div class="detail-data-card">
+            <h3 class="detail-card-title">Расовые навыки</h3>
+            <div class="detail-columns-grid">
+
+                <!-- Блок фиксированных навыков объекта -->
                 {% if race.fixed_skills %}
-                    <div class="skill-column-box">
-                        <div class="skill-group-title">Вы владеете следующими навыками:</div>
-                        <div class="skill-tag">
+                    <div class="detail-column-box">
+                        <div class="detail-group-title">Вы владеете следующими навыками:</div>
+                        <div class="detail-column-list">
+                            <!-- Итератор Django: обход массива фиксированных навыков из контекста -->
                             {% for skill in get_fixed_skills_list %}
-                                <span class="skill-tag-detail">{{ skill }}</span>
+                                <span class="detail-column-item">{{ skill }}</span>
                             {% endfor %}
                         </div>
                     </div>
                 {% endif %}
+
+                <!-- Блок вариативных навыков выбора объекта -->
                 {% if race.choice_skills %}
-                    <div class="skill-column-box">
-                        <div class="skill-group-title">Выберите {{ race.skills_choice_count }} из следующих навыков:</div>
-                        <div class="skill-tag">
+                    <div class="detail-column-box">
+                        <div class="detail-group-title">Выберите {{ race.skills_choice_count }} из следующих навыков:</div>
+                        <div class="detail-column-list">
+                            <!-- Итератор Django: обход массива навыков выбора из контекста -->
                             {% for skill in get_choice_skills_list %}
-                                <span class="skill-tag-detail">{{ skill }}</span>
+                                <span class="detail-column-item">{{ skill }}</span>
                             {% endfor %}
                         </div>
                     </div>
@@ -74,69 +88,88 @@
         </div>
     {% endif %}
 
-        <!-- Программные особенности (Механики d20) -->
+    <!-- Компонент панели программных особенностей и механик -->
     {% if race.traits.all %}
-        <div class="sidebar-section">
-            <h3 class="sidebar-title">Расовые способности</h3>
-            <div class="detail-traits-list">
+        <div class="detail-data-card">
+            <h3 class="detail-card-title">Расовые способности</h3>
+            <div class="detail-block-list">
+                <!-- Итератор Django: обход связанной таблицы способностей объекта -->
                 {% for trait in race.traits.all %}
-                    <div class="detail-trait-card">
-                        <div class="dt-header">
-                            <span class="dt-name">{{ trait.name }}</span>
+                    <!-- Модуль строчной карточки способности -->
+                    <div class="detail-row-card">
+                        <!-- Компонент заголовочного отсека карточки -->
+                        <div class="detail-row-header">
+                            <span class="detail-row-title">{{ trait.name }}</span>
                         </div>
-                        <p class="dt-desc">{{ trait.description }}</p>
+                        <!-- Текстовый блок описания механики способности -->
+                        <p class="detail-row-desc">{{ trait.description }}</p>
                     </div>
                 {% endfor %}
             </div>
         </div>
     {% endif %}
 
-    <!-- Традиции именования -->
-    <div class="sidebar-section">
-        <h2 class="sidebar-title">Имена и традиции именования</h2>
-        <div class="ability-desc">{{ race.names|safe }}</div>
+    <!-- Компонент панели традиций именования и ономастики -->
+    <div class="detail-data-card">
+        <h2 class="detail-card-title">Имена и традиции именования</h2>
 
-        <div class="ability-list">
-        <!-- Группа элементов -->
+        <!-- Компонент текстового вводного описания традиций -->
+        <div class="detail-card-lead">{{ race.names }}</div>
+
+        <!-- Контейнер вертикального стека подгрупп имен -->
+        <div class="detail-block-list">
+
+            <!-- Модуль подгруппы мужских имен -->
             {% if race.male_names %}
-            <div class="ability-card">
-                <div class="ability-card-top">Мужские имена</div>
-                <div class="ability-body">
+            <div class="detail-sub-card">
+                <span class="detail-sub-title">Мужские имена</span>
+                <!-- Контейнер флекс-сетки графических маркеров имен -->
+                <div class="detail-badge-flex">
+                    <!-- Итератор Django: обход массива строк мужских имен -->
                     {% for name in race.male_names %}
-                    <span class="ability-badge">{{ name }}</span>
+                    <span class="detail-badge">{{ name }}</span>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
 
+            <!-- Модуль подгруппы женских имен -->
             {% if race.female_names %}
-            <div class="ability-card">
-                <span class="ability-card-top">Женские имена</span>
-                <div class="ability-body">
+            <div class="detail-sub-card">
+                <span class="detail-sub-title">Женские имена</span>
+                <!-- Контейнер флекс-сетки графических маркеров имен -->
+                <div class="detail-badge-flex">
+                    <!-- Итератор Django: обход массива строк женских имен -->
                     {% for name in race.female_names %}
-                        <span class="ability-badge">{{ name }}</span>
+                        <span class="detail-badge">{{ name }}</span>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
 
+            <!-- Модуль подгруппы универсальных имен -->
             {% if race.universal_names %}
-            <div class="ability-card">
-                <span class="ability-card-top">Универсальные имена</span>
-                <div class="ability-body">
+            <div class="detail-sub-card">
+                <span class="detail-sub-title">Универсальные имена</span>
+                <!-- Контейнер флекс-сетки графических маркеров имен -->
+                <div class="detail-badge-flex">
+                    <!-- Итератор Django: обход массива строк универсальных имен -->
                     {% for name in race.universal_names %}
-                        <span class="ability-badge">{{ name }}</span>
+                        <span class="detail-badge">{{ name }}</span>
                     {% endfor %}
                 </div>
             </div>
             {% endif %}
 
+            <!-- Модуль подгруппы фамилий-->
             {% if race.surnames %}
-            <div class="ability-card">
-                <span class="ability-card-top">Фамилии</span>
-                <div class="ability-body">
+            <div class="detail-sub-card">
+                <span class="detail-sub-title">Фамилии</span>
+                <!-- Контейнер флекс-сетки графических маркеров имен -->
+                <div class="detail-badge-flex">
+                    <!-- Итератор Django: обход массива строк фамилий -->
                     {% for surname in race.surnames %}
-                        <span class="ability-badge">{{ surname }}</span>
+                        <span class="detail-badge">{{ surname }}</span>
                     {% endfor %}
                 </div>
             </div>
@@ -144,107 +177,107 @@
         </div>
     </div>
 
-    <!-- География расселения -->
-    {% if race.homeworld or race.colonies.exists or race.enclaves.exists or race.outposts.exists or race.integrated_worlds.exists %}
-        <div class="sidebar-section">
-        <h3 class="sidebar-title">Миры расселения</h3>
-        <div class="settlements-tags">
+    <!-- Компонент панели географического расселения и планетарных узлов -->
+    <div class="detail-data-card">
+    <h3 class="detail-card-title">Миры расселения</h3>
+    <div class="detail-flex-row">
 
-            <!-- 1. Родной мир -->
-            {% if race.homeworld %}
-            <div class="planet-category-row">
-                <span class="planet-lore-status">РОДНОЙ МИР</span>
-                <div class="planet-row">
-                    <a href="#" class="galaxy-link">{{ race.homeworld.name }}</a>
-                </div>
+        <!-- Блок суверенного родного мира объекта -->
+        <div class="detail-grid-column">
+            <span class="detail-column-label">РОДНОЙ МИР</span>
+            <div class="detail-column-stack">
+                <!-- Системный якорь перехода к модулю связанного объекта базы данных -->
+                <a href="#" class="db-link">{{ race.homeworld.name }}</a>
             </div>
-            {% endif %}
-
-            <!-- 2. Суверенные колонии -->
-            {% if race.colonies.exists %}
-            <div class="planet-category-row">
-                <span class="planet-lore-status">КОЛОНИЯ</span>
-                <div class="planet-row">
-                    {% for planet in race.colonies.all %}
-                    <a href="#" class="galaxy-link">{{ planet.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- 3. Автономные анклавы -->
-            {% if race.enclaves.exists %}
-            <div class="planet-category-row">
-                <span class="planet-lore-status">АНКЛАВ</span>
-                <div class="planet-row">
-                    {% for planet in race.enclaves.all %}
-                    <a href="#" class="galaxy-link">{{ planet.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- 4. Промышленные форпосты -->
-            {% if race.outposts.exists %}
-            <div class="planet-category-row">
-                <span class="planet-lore-status">ПРОМЫШЛЕННЫЙ ФОРПОСТ</span>
-                <div class="planet-row">
-                    {% for planet in race.outposts.all %}
-                    <a href="#" class="galaxy-link">{{ planet.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- 5. Интегрированные миры -->
-            {% if race.integrated_worlds.exists %}
-            <div class="planet-category-row">
-                <span class="planet-lore-status">ИНТЕГРИРОВАННЫЕ МИРЫ</span>
-                <div class="planet-row">
-                    {% for planet in race.integrated_worlds.all %}
-                    <a href="#" class="galaxy-link">{{ planet.name }}</a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
         </div>
+
+        <!-- Блок суверенных колоний объекта -->
+        {% if race.colonies.exists %}
+        <div class="detail-grid-column">
+            <span class="detail-column-label">КОЛОНИЯ</span>
+            <div class="detail-column-stack">
+                <!-- Итератор Django: обход массива связанных планетарных объектов -->
+                {% for planet in race.colonies.all %}
+                <a href="#" class="db-link">{{ planet.name }}</a>
+                {% endfor %}
+            </div>
         </div>
-    {% endif %}
+        {% endif %}
 
-    <!-- Блок атмосферной цитаты -->
-    {% if race.quote %}
-        <blockquote class="race-blockquote">
-            <!-- Маленькие технологичные элементы интерфейса по краям -->
-            <div class="quote-decor top-right"></div>
+        <!-- Блок автономных анклавов объекта -->
+        {% if race.enclaves.exists %}
+        <div class="detail-grid-column">
+            <span class="detail-column-label">АНКЛАВ</span>
+            <div class="detail-column-stack">
+                <!-- Итератор Django: обход массива связанных планетарных объектов -->
+                {% for planet in race.enclaves.all %}
+                <a href="#" class="db-link">{{ planet.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
-            <p class="quote-text">«{{ race.quote }}»</p>
-            <cite class="quote-author">// {{ race.quote_author }} //</cite>
-        </blockquote>
-    {% endif %}
+        <!-- Блок промышленных форпостов объекта -->
+        {% if race.outposts.exists %}
+        <div class="detail-grid-column">
+            <span class="detail-column-label">ПРОМЫШЛЕННЫЙ ФОРПОСТ</span>
+            <div class="detail-column-stack">
+                <!-- Итератор Django: обход массива связанных планетарных объектов -->
+                {% for planet in race.outposts.all %}
+                <a href="#" class="db-link">{{ planet.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
 
-    <!-- Общее описание -->
-    <div class="lore-block">
-        <h2 class="lore-section-title">Общие сведения</h2>
-        <div class="ck-content">{{ race.description|safe }}</div>
+        <!-- Блок интегрированных системных миров объекта -->
+        {% if race.integrated_worlds.exists %}
+        <div class="detail-grid-column">
+            <span class="detail-column-label">ИНТЕГРИРОВАННЫЕ МИРЫ</span>
+            <div class="detail-column-stack">
+                <!-- Итератор Django: обход массива связанных планетарных объектов -->
+                {% for planet in race.integrated_worlds.all %}
+                <a href="#" class="db-link">{{ planet.name }}</a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+    </div>
+
+    <!-- Модуль атмосферной цитаты базы данных -->
+    <blockquote class="db-blockquote">
+        <!-- Компонент основного текста цитаты -->
+        <p class="db-quote-text">«{{ race.quote }}»</p>
+        <!-- Компонент подписи автора цитаты -->
+        <cite class="db-quote-author">// {{ race.quote_author }} //</cite>
+    </blockquote>
+
+    <!-- Модуль панели биологических особенностей объекта -->
+    <div class="detail-article-block">
+        <h2 class="detail-article-title">Общие сведения</h2>
+        <!-- Контентный контейнер CKEditor с поддержкой рендеринга HTML и графического обтекания -->
+        <div class="ck-content">{{ race.description }}</div>
     </div>
 
     <!-- Биология и внешность -->
-    <div class="lore-block">
-        <h2 class="lore-section-title">Биология и внешний вид</h2>
-        <div class="ck-content" style="--img-ratio: {{ race.biology_image.width }} / {{ race.biology_image.height }};">
-            {{ race.biology|safe }}
-        </div>
+    <div class="detail-article-block">
+        <h2 class="detail-article-title">Биология и внешний вид</h2>
+        <!-- Контентный контейнер CKEditor с поддержкой рендеринга HTML и графического обтекания -->
+        <div class="ck-content">{{ race.biology|safe }}</div>
     </div>
 
-    <!-- Общество и культура -->
-    <div class="lore-block">
-        <h2 class="lore-section-title">Общество и культура</h2>
+    <!-- Модуль панели социокультурных данных объекта -->
+    <div class="detail-article-block">
+        <h2 class="detail-article-title">Общество и культура</h2>
+        <!-- Контентный контейнер CKEditor с поддержкой рендеринга HTML и графического обтекания -->
         <div class="ck-content">{{ race.culture|safe }}</div>
     </div>
 
-    <!-- История расы -->
-    <div class="lore-block">
-        <h2 class="lore-section-title">История и хронология вида</h2>
+    <!-- Модуль панели исторической хронологии объекта -->
+    <div class="detail-article-block">
+        <h2 class="detail-article-title">История и хронология вида</h2>
+        <!-- Контентный контейнер CKEditor с поддержкой рендеринга HTML и графического обтекания -->
         <div class="ck-content">{{ race.history|safe }}</div>
     </div>
 

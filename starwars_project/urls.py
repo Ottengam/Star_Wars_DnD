@@ -4,15 +4,16 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    # Системный интерфейс управления базой данных (Админ-панель)
     path('admin/', admin.site.urls),
 
-    # Подключаем маршруты CKEditor 5 для загрузки картинок внутри текста
+    # Маршруты интеграции текстового WYSIWYG-редактора django_ckeditor_5
     path('ckeditor5/', include('django_ckeditor_5.urls')),
 
-    # Подключаем свои приложения
+    # Локальный модуль навигации и детализации объектов справочника (Вики)
     path('wiki/', include('wiki.urls', namespace='wiki')),
 ]
 
-# Раздача картинок (папки media) во время разработки проекта
+# Раздача пользовательских медиафайлов в локальном режиме разработки
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

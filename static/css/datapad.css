@@ -1,0 +1,195 @@
+/**
+ * @file datapad.css
+ * @description Модуль футуристичного интерфейса "Датапад".
+ * @version 1.0.0
+ * @section Глобальные компоненты / Global UI
+ *
+ * Зависимости:
+ * - Цветовая палитра:
+ *   --sw-gold
+ *   --sw-neon-blue
+ *   --bg-dark
+ * - Световые эффекты и текстуры:
+ *   --datapad-bg
+ *   --dt-border-color
+ *   --dt-shadow-color
+ * - Шрифты: 'Russo One'.
+ */
+
+
+/* ==========================================================================
+   1. ШАПКА ДАТАПАДА
+   ========================================================================== */
+
+/**
+ * Контейнер заголовка.
+ */
+.datapad-header {
+    /* Позиционирование и слои */
+    text-align: center;
+    position: relative;
+    z-index: 2;
+
+    /* Текстурированный полупрозрачный фон */
+    background-image: var(--datapad-bg);
+    background-repeat: repeat;
+
+    /* Геометрия и внутренние отступы */
+    padding: 15px 45px;
+    margin: 0 auto -5px auto; /* Центрирование по горизонтали и компенсация наложения на основной блок body */
+
+    /* Рамки и неоновое свечение */
+    border-top: 2px solid var(--dt-border-color); /* Точное совпадение с .datapad-body */
+    box-shadow: inset 0 0 15px 0 var(--dt-shadow-color); /* Мягкий внутренний объем */
+
+    /* Эффект срезанных углов (Трапеция: верх сужен на 40px с краев) */
+    clip-path: polygon(
+        40px 0,
+        calc(100% - 40px) 0,
+        100% 100%,
+        0 100%
+    );
+}
+
+/**
+ * Главный акцентный заголовок.
+ */
+.datapad-header-title {
+    /* Шрифт и регистр */
+    font-family: 'Russo One', sans-serif;
+    font-size: 2.5rem;
+    line-height: 0.9;
+    text-transform: uppercase;
+
+    /* Цвет и неоновое свечение */
+    color: var(--sw-gold);
+    text-shadow: 0 0 15px rgb(var(--sw-gold) / 0.4);
+
+    /* Геометрия и внешние отступы */
+    margin-top: 0;
+    margin-bottom: 0.2em; /* Стык до подзаголовка */
+}
+
+/**
+ * Информационный подзаголовок.
+ */
+.datapad-header-subtitle {
+    /* Шрифт и геометрия текста */
+    font-size: 1.2rem;
+    line-height: 1.1;
+    letter-spacing: 1px; /* Фирменное разрежение букв */
+
+    /* Цвет и стилизация */
+    color: var(--sw-neon-blue);
+
+    /* Внешние отступы */
+    margin-top: 0;
+    margin-bottom: 0; /* Полностью чистый низ, отступ контролирует родитель */
+}
+
+
+/* ==========================================================================
+   2. ТЕЛО ДАТАПАДА
+   ========================================================================== */
+
+/**
+ * Главный контентный блок датапада.
+ */
+.datapad-body {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+    width: 100%;
+
+    /* Позиционирование и слои */
+    position: relative;
+    z-index: 1;
+
+    /* Текстурированный затемненный фон */
+    background-image: var(--datapad-bg);
+    background-repeat: repeat;
+
+    /* Геометрия и внутренние отступы */
+    padding: 30px;
+    box-sizing: border-box;
+
+    /* Границы и скругления (Защита стыка с шапкой) */
+    border-radius: 15px;
+    border: 2px solid var(--dt-border-color);
+
+    /* Неоновое свечение и глубина */
+    box-shadow:
+        inset 0 0 20px 0 var(--dt-shadow-color),
+        0 20px 50px 0 rgba(0, 0, 0, 0.85);
+}
+
+
+/* ==========================================================================
+   3. МОБИЛЬНЫЙ АДАПТИВ
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /**
+    * Адаптация шапки.
+    */
+    .datapad-header {
+        /* Геометрия и отступы */
+        width: 100%;
+        box-sizing: border-box;
+        padding: 55px 15px 5px 15px;
+        margin-bottom: 20px;
+
+        /* Световые эффекты и полупрозрачный фон */
+        clip-path: none;
+        background-image: none; /* Проявляет глобальный темный фон */
+        background-color: color-mix(in srgb, var(--bg-dark) 40%, transparent);
+        box-shadow: none;
+
+        /* Визуальное оформление панели */
+        border: 2px solid var(--dt-border-color);
+        border-top: none;
+        border-radius: 8px;
+    }
+
+    /**
+     * Адаптация главного заголовка.
+     */
+    .datapad-header-title {
+        /* Геометрия и шрифты */
+        font-size: 2.2rem;
+        line-height: 1; /* Страховка от наложения строк при переносе слов */
+
+        /* Внешние отступы */
+        margin-bottom: 0.1em; /* Уменьшенный стык для компенсации новой высоты строки */
+    }
+
+    /**
+     * Адаптация подзаголовка.
+     */
+    .datapad-header-subtitle {
+        /* Геометрия и шрифты */
+        font-size: 1.1rem;
+        line-height: 1.2;
+
+        /* Внешние отступы */
+        margin-bottom: 15px; /* Защитный отступ снизу до контентного блока */
+    }
+
+    /**
+     * Адаптация главного контентного блока под мобильные телефоны и планшеты.
+     */
+    .datapad-body {
+        /* Геометрия и внутренние отступы */
+        padding: 0; /* Обнуляем отступы, чтобы внутренние карточки заняли всю ширину экрана */
+        gap: 15px; /* Уплотненный вертикальный шаг между карточками */
+
+        /* Сброс декоративных эффектов и текстур */
+        background-image: none;
+        box-shadow: none;
+
+        /* Сброс границ и скруглений */
+        border: none;
+        border-radius: 0;
+    }
+}

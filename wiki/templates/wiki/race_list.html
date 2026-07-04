@@ -1,47 +1,50 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Расы | Star Wars Wiki{% endblock %}
+<!-- Мета-заголовок документа с указанием текущей вселенной базы данных -->
+{% block title %}Расы | Star Wars | Квидухаб.GAMES{% endblock %}
+
+<!-- Подключение локальных модулей стилей страницы списков -->
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/datapad.css' %}">
+    <link rel="stylesheet" href="{% static 'css/object-list.css' %}">
+{% endblock %}
+
 
 {% block content %}
-<div class="wiki-section-header">
-    <h1 class="wiki-title">Расы Галактики</h1>
-    <p class="wiki-subtitle">Энциклопедия существ и обитателей вселенной</p>
+<!-- Презентационный заголовок раздела базы данных -->
+<div class="datapad-header">
+    <h1 class="datapad-header-title">Расы Галактики</h1>
+    <p class="datapad-header-subtitle">Энциклопедия существ и обитателей вселенной</p>
 </div>
 
-<!-- Контейнер для списка рас -->
-<div class="wiki-grid">
-    <!-- Цикл Django: берет каждую расу из базы данных из переменной 'races' -->
+<!-- Контейнер итерации карточек объектов -->
+<div class="datapad-body">
+    <!-- Итератор Django: обход массива races -->
     {% for race in races %}
-        <div class="wiki-card">
+        <div class="ol-card">
 
-            <!-- Левая колонка карточки: Изображение -->
-            <div class="wiki-card-image">
-                {% if race.image %}
-                    <!-- Если у расы в админке загружена картинка -->
-                    <img src="{{ race.image.url }}" alt="{{ race.name }}" class="wiki-img">
-                {% else %}
-                    <!-- Заглушка, если картинки нет -->
-                    <img src="{% static 'images/no-avatar.jpg' %}" alt="Нет фото" class="wiki-img">
-                {% endif %}
+            <!-- Компонент графического контейнера карточки -->
+            <div class="ol-card-image">
+                <img src="{{ race.image.url }}" alt="{{ race.name }}" class="ol-img">
             </div>
 
-            <!-- Правая колонка карточки: Текст и Лор -->
-            <div class="wiki-card-info">
-                <h2 class="wiki-card-title">
-                    <!-- Ссылка на будущую детальную страницу отдельной расы -->
-                    <a href="{% url 'wiki:race_detail' race.id %}" class="wiki-stretched-link">{{ race.name }}</a>
+            <!-- Компонент информационного контейнера карточки -->
+            <div class="ol-card-info">
+                <h2 class="ol-card-title">
+                    <!-- Системный якорь перехода к детальной карточке объекта по первичному ключу -->
+                    <a href="{% url 'wiki:race_detail' race.pk %}" class="ol-stretched-link">{{ race.name }}</a>
                 </h2>
 
-                <!-- Описание расы из CKEditor 5. Фильтр |safe нужен, чтобы HTML-теги лора отображались как текст, а не кодом -->
-                <div class="wiki-card-body">
-                    {{ race.description|slice:":300"|safe }}...
+                <!-- Компонент текстового блока с безопасным ограничением длины HTML-строки -->
+                <div class="ol-card-body">
+                    {{ race.description }}
                 </div>
             </div>
 
         </div>
     {% empty %}
-        <!-- Этот блок сработает, если ты еще не добавил ни одной расы в админке -->
+        <!-- Системное уведомление при отсутствии записей в таблице базы данных -->
         <div class="empty-warning">
             <p>В базе данных пока нет созданных рас.</p>
         </div>

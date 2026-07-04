@@ -1,0 +1,859 @@
+/**
+ * @file object-detail.css
+ * @description Системный модуль для детального отображения объекта базы данных.
+ * @version 1.0.0
+ * @section Детали объекта / Object Detail UI
+ *
+ * Зависимости:
+ * - Цветовая палитра:
+ *   --sw-neon-blue
+ *   --sw-deep-blue
+ *   --sw-gold
+ *   --sw-neon-green
+ *   --sw-neon-red
+ *   --panel-bg
+ *   --panel-bg-light
+ */
+
+
+/* ==========================================================================
+   1. СИСТЕМНЫЙ КАРКАС И СЕТКИ
+   ========================================================================== */
+
+/**
+ * Верхняя презентационная сетка карточек.
+ */
+.detail-top-row {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    align-items: stretch;
+    gap: 25px;
+
+    /* Геометрия контейнера */
+    width: 100%;
+}
+
+/**
+ * Главный аватар объекта.
+ */
+.detail-avatar {
+    /* Отображение и флекс-позиционирование */
+    flex-shrink: 0;
+
+    /* Геометрия контейнера */
+    width: 100%;
+    max-width: 320px;
+    height: 100%;
+
+    /* Границы и скругления */
+    border-radius: 8px;
+    overflow: hidden;
+
+    /* Световые эффекты и контуры */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 25%, transparent);
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, 0.8),
+        0 0 20px color-mix(in srgb, var(--sw-deep-blue) 15%, transparent);
+}
+/**
+ * Изображение внутри контейнера аватара.
+ */
+.detail-avatar img {
+    /* Отображение и геометрия */
+    width: 100%;
+    display: block;
+    object-fit: cover;
+
+    /* Визуальные эффекты */
+    filter: brightness(0.95) contrast(1.05);
+
+    /* Интерактивная динамика */
+    transition: filter 0.3s ease;
+}
+/**
+ * Интерактивный эффект при наведении мыши на аватар.
+ */
+.detail-avatar:hover img {
+    /* Визуальные эффекты */
+    filter: brightness(1.05) contrast(1.1);
+}
+
+/**
+ * Адаптивная двухколоночная сетка с автоматическим распределением ширины.
+ */
+.detail-columns-grid {
+    /* Отображение и сетка */
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    column-gap: 40px;
+    row-gap: 20px;
+
+    /* Геометрия контейнера */
+    width: 100%;
+}
+
+/**
+ * Равномерный горизонтальный ряд элементов с выравниванием по высоте.
+ */
+.detail-flex-row {
+    /* Отображение и сетка */
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+
+    /* Внешние отступы */
+    margin-top: 20px;
+}
+
+
+/* ==========================================================================
+   2. ТАБЛИЧНЫЕ ДАННЫЕ (КЛЮЧ-ЗНАЧЕНИЕ)
+   ========================================================================== */
+
+/**
+ * Монолитная карточка для отображения структурированных табличных данных.
+ */
+.detail-data-card {
+    /* Отображение и геометрия */
+    padding: 25px;
+    width: 100%;
+
+    /* Цвет и стилизация фона */
+    background: var(--panel-bg);
+    backdrop-filter: blur(10px);
+
+    /* Границы и скругления */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 15%, transparent);
+    border-radius: 12px;
+
+    /* Световые эффекты и тени */
+    box-shadow:
+        0 10px 30px rgba(0, 0, 0, 0.5),
+        inset 0 0 20px color-mix(in srgb, var(--sw-deep-blue) 5%, transparent);
+}
+
+/**
+ * Стилизованный заголовок карточки с неоновым разделителем и диодом.
+ */
+.detail-card-title {
+    /* Отступы */
+    margin-bottom: 25px;
+    padding-bottom: 12px;
+
+    /* Шрифты и типографика */
+    color: var(--sw-gold);
+    font-size: 1.1rem;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: center;
+
+    /* Декоративная Sci-Fi линия */
+    position: relative;
+    border-bottom: 2px solid color-mix(in srgb, var(--sw-neon-blue) 40%, transparent);
+    border-image: linear-gradient(90deg,
+        transparent 0%,
+        color-mix(in srgb, var(--sw-neon-blue) 45%, transparent),
+        var(--sw-neon-blue),
+        var(--sw-neon-blue),
+        color-mix(in srgb, var(--sw-neon-blue) 45%, transparent),
+        transparent 100%
+    ) 1;
+}
+/**
+ * Центральный светящийся диод на линии разделителя.
+ */
+.detail-card-title::before {
+    /* Системный маркер генерации элемента */
+    content: '';
+
+    /* Фиксированное позиционирование и центрирование */
+    position: absolute;
+    bottom: -4px;
+    left: 50%;
+    transform: translateX(-50%);
+
+    /* Геометрия диода */
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+
+    /* Цвета и световые эффекты */
+    background: var(--sw-neon-blue);
+    box-shadow: 0 0 10px 2px var(--sw-neon-blue);
+}
+
+/**
+ * Глобальный вертикальный стек-контейнер для элементов карточки.
+ */
+.detail-data-list {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    /* Геометрия и внешние отступы */
+    width: 100%;
+    margin-top: 15px;
+}
+
+/**
+ * Двухколоночная строка для отображения параметров по схеме "ключ-значение".
+ */
+.detail-data-row {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    /* Геометрия и внутренние отступы */
+    padding: 8px 4px;
+    width: 100%;
+
+    /* Границы и разделительные линии */
+    border-bottom: 1px dashed color-mix(in srgb, var(--sw-neon-blue) 8%, transparent);
+}
+/**
+ * Сброс границы у финального элемента списка.
+ */
+.detail-data-row:last-of-type {
+    /* Системный сброс границ */
+    border-bottom: none;
+}
+/**
+ * Название параметра (Левая колонка строки).
+ */
+.detail-data-row span {
+    font-size: 1.05rem;
+    text-shadow: 0 0 6px color-mix(in srgb, var(--sw-neon-blue) 25%, transparent);
+}
+/**
+ * Значение параметра (Правая колонка строки).
+ */
+.detail-data-row strong {
+    /* Базовая геометрия и шрифты */
+    font-size: 1.15rem;
+    font-weight: 700;
+
+    /* Дефолтное состояние */
+    color: var(--sw-neon-blue);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--sw-neon-blue) 60%, transparent);
+}
+/**
+ * Положительный модификатор параметра.
+ */
+.detail-data-row strong.pos {
+    /* Цвета и световые эффекты */
+    color: var(--sw-neon-green);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--sw-neon-green) 60%, transparent);
+}
+/**
+ * Отрицательный модификатор параметра.
+ */
+.detail-data-row strong.neg {
+    /* Цвета и световые эффекты */
+    color: var(--sw-neon-red);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--sw-neon-red) 60%, transparent);
+}
+
+/**
+ * Блок колонки с вертикальным маркером и легкой подложкой.
+ */
+.detail-column-box {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+
+    /* Геометрия и внутренние отступы */
+    width: 100%;
+    padding: 6px 15px 10px 0;
+
+    /* Цвет и стилизация фона */
+    background: var(--panel-bg-light);
+
+    /* Границы и скругления */
+    border-left: 2px solid var(--sw-gold);
+    border-radius: 0 4px 4px 0;
+}
+
+/**
+ * Заголовок внутренней группы параметров с растворяющейся линией.
+ */
+.detail-group-title {
+    /* Геометрия и отступы */
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 10px;
+    padding-bottom: 12px;
+    padding-left: 15px;
+
+    /* Шрифты и типографика */
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+
+    /* Декоративная растворяющаяся линия */
+    border-bottom: 2px solid color-mix(in srgb, var(--sw-neon-blue) 40%, transparent);
+    border-image: linear-gradient(to right,
+        var(--sw-gold) 0%,
+        var(--sw-gold) 75%,
+        color-mix(in srgb, var(--sw-gold) 30%, transparent) 90%,
+        transparent 100%
+    ) 1;
+}
+
+/**
+ * Стек-контейнер для элементов внутри контентной колонки.
+ */
+.detail-column-list {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    /* Геометрия и внутренние отступы */
+    width: 100%;
+    margin-top: 5px;
+    padding-left: 15px;
+}
+
+/**
+ * Текстовый элемент параметра внутри контентной колонки.
+ */
+.detail-column-item {
+    /* Системное отображение */
+    display: block;
+
+    /* Шрифты и типографика */
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: var(--sw-neon-blue);
+
+    /* Световые эффекты */
+    text-shadow: 0 0 8px color-mix(in srgb, var(--sw-neon-blue) 20%, transparent);
+}
+
+/**
+ * Глобальный вертикальный стек-контейнер повышенной емкости для крупных блоков карточки.
+ */
+.detail-block-list {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+
+    /* Геометрия и внешние отступы */
+    margin-top: 25px;
+}
+
+/**
+ * Двухколоночная строчная карточка для отображения крупных блоков параметров.
+ */
+.detail-row-card {
+    /* Отображение и грид-сетка */
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    column-gap: 30px;
+    align-items: stretch;
+
+    /* Цвет и стилизация фона */
+    background: var(--panel-bg-light);
+
+    /* Границы и отступы */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 10%, transparent);
+    border-radius: 4px;
+    padding: 15px 20px;
+}
+
+/**
+ * Заголовочный отсек строчной карточки с вертикальным разделителем.
+ */
+.detail-row-header {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    align-items: center;
+
+    /* Границы и внутренние отступы */
+    border-right: 1px solid color-mix(in srgb, var(--sw-neon-blue) 15%, transparent);
+    padding-right: 20px;
+}
+
+/**
+ * Текстовый заголовок внутри строчной карточки.
+ */
+.detail-row-title {
+    /* Шрифты и типографика */
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1.5;
+}
+
+/**
+ * Текстовое описание внутри строчной карточки.
+ */
+.detail-row-desc {
+    /* Шрифты и типографика */
+    font-size: 0.92rem;
+    line-height: 1.5;
+    color: var(--sw-neon-blue);
+
+    /* Выравнивание и умный перенос слов */
+    text-align: justify;
+    hyphens: auto;
+}
+
+/**
+ * Вводный лидирующий абзац текста повышенной читаемости.
+ */
+.detail-card-lead {
+    /* Шрифты и типографика */
+    line-height: 1.65;
+    font-size: 1.05rem;
+
+    /* Выравнивание и умный перенос слов */
+    text-align: justify;
+    hyphens: auto;
+
+    /* Внешние отступы */
+    margin-top: 15px;
+}
+
+/**
+ * Внутренняя под-карточка для дополнительной группировки микро-данных.
+ */
+.detail-sub-card {
+    /* Геометрия и внутренние отступы */
+    padding: 12px 0;
+    overflow: hidden;
+
+    /* Цвет и стилизация фона */
+    background-color: var(--panel-bg-light);
+
+    /* Границы и скругления */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 10%, transparent);
+    border-radius: 4px;
+}
+
+/**
+ * Вшитый тактический ярлык-заголовок для внутренних блоков.
+ */
+.detail-sub-title {
+    /* Отображение и геометрия */
+    display: inline-block;
+    white-space: nowrap;
+    margin-bottom: 10px;
+    padding: 4px 10px;
+
+    /* Шрифты и типографика */
+    color: var(--sw-gold);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: bold;
+
+    /* Стилизация и полупрозрачный фон */
+    background-color: color-mix(in srgb, var(--sw-gold) 5%, transparent);
+
+    /* Границы и скругления "вшитого" типа */
+    border: 1px solid color-mix(in srgb, var(--sw-gold) 20%, transparent);
+    border-left: none;
+    border-radius: 0 4px 4px 0;
+}
+
+/**
+ * Гибкая флекс-сетка с автоматическим переносом для размещения текстовых чипов.
+ */
+.detail-badge-flex {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+
+    /* Внутренние отступы */
+    padding: 5px 15px;
+}
+
+/**
+ * Текстовый чип-маркер для отображения изолированных данных.
+ */
+.detail-badge {
+    /* Геометрия и внутренние отступы */
+    padding: 5px 11px;
+
+    /* Шрифты, цвета и световые эффекты */
+    color: var(--sw-neon-blue);
+    font-size: 0.9rem;
+    text-shadow: 0 0 6px color-mix(in srgb, var(--sw-neon-blue) 15%, transparent);
+
+    /* Цвет фона и стилизация */
+    background: var(--panel-bg-light);
+
+    /* Границы и контуры */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 15%, transparent);
+    border-radius: 4px;
+}
+
+/**
+ * Вертикальная контентная колонка с легкой подложкой и контуром.
+ */
+.detail-grid-column {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+
+    /* Цвет и стилизация фона */
+    background-color: var(--panel-bg-light);
+
+    /* Границы и внутренние отступы */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 10%, transparent);
+    border-radius: 4px;
+    padding: 10px 14px 16px;
+}
+
+/**
+ * Центрированный микро-заголовок контентной колонки фиксированной высоты.
+ */
+.detail-column-label {
+    /* Отображение и флекс-центрирование */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* Геометрия и внешние отступы */
+    min-height: 1.92rem;
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+
+    /* Шрифты и типографика */
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    line-height: 1.2;
+    text-transform: uppercase;
+    text-align: center;
+
+    /* Границы и разделительные линии */
+    border-bottom: 1px solid color-mix(in srgb, var(--sw-neon-blue) 20%, transparent);
+}
+
+/**
+ * Текстовый вертикальный стек элементов внутри контентной колонки.
+ */
+.detail-column-stack {
+    /* Отображение и флекс-сетка */
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: center;
+}
+
+/**
+ * Локальное масштабирование ссылок базы данных внутри стека колонки.
+ */
+.detail-column-stack .galaxy-link {
+    /* Шрифты и типографика */
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+
+/* ==========================================================================
+   3. ТЕКСТОВЫЕ БЛОКИ
+   ========================================================================== */
+
+/**
+ * Универсальный контейнер-панель текстовой статьи.
+ */
+.detail-article-block {
+    /* Отображение и позиционирование */
+    position: relative;
+
+    /* Геометрия и отступы */
+    margin-bottom: 3rem;
+    padding: 0 30px 25px 30px;
+
+    /* Цвета, фон и неоновое свечение */
+    background: var(--panel-bg);
+    box-shadow:
+        inset 0 0 20px color-mix(in srgb, var(--sw-neon-blue) 4%, transparent),
+        0 4px 15px rgba(0, 0, 0, 0.4);
+
+    /* Границы и скругления */
+    border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 20%, transparent);
+    border-radius: 6px;
+    overflow: hidden;
+}
+/**
+ * Контентный контейнер CKEditor внутри панели статьи.
+ */
+.detail-article-block .ck-content {
+    /* Отображение и изоляция обтекания */
+    display: flow-root;
+
+    /* Шрифты и типографика */
+    font-size: 1.1rem;
+    line-height: 1.65;
+    text-align: justify;
+    hyphens: auto;
+}
+/**
+ * Абзацы текста внутри контентного контейнера CKEditor.
+ */
+.detail-article-block .ck-content p {
+    /* Геометрия и внешние отступы */
+    margin-bottom: 1.4rem;
+}
+/**
+ * Финальный абзац текста внутри контентного контейнера CKEditor.
+ */
+.detail-article-block .ck-content p:last-child {
+    /* Геометрия и внешние отступы */
+    margin-bottom: 0;
+}
+/**
+ * Обертка изображения CKEditor внутри панели статьи.
+ */
+.detail-article-block .ck-content figure.image {
+    /* Отображение и обтекание */
+    float: right;
+    display: block;
+
+    /* Геометрия и внешние отступы */
+    width: 252px;
+    margin: -66px -30px 5px 14px;
+}
+/**
+ * Изображение внутри обертки CKEditor.
+ */
+.detail-article-block .ck-content figure.image img {
+    /* Отображение и геометрия */
+    display: block;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+
+    /* Цвета, фон и неоновое свечение */
+    background: var(--panel-bg-light);
+    box-shadow:
+        inset 0 0 15px color-mix(in srgb, var(--sw-neon-blue) 10%, transparent),
+        0 0 12px color-mix(in srgb, var(--sw-neon-blue) 15%, transparent),
+        0 4px 20px rgba(0, 0, 0, 0.8);
+
+    /* Границы и скругления */
+    border-left: 1px solid color-mix(in srgb, var(--sw-neon-blue) 35%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--sw-neon-blue) 35%, transparent);
+    border-bottom-left-radius: 4px;
+}
+
+/**
+ * Универсальный заголовок-плашка текстовой статьи базы данных.
+ */
+.detail-article-title {
+    /* Отображение и позиционирование */
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+
+    /* Геометрия и отступы */
+    margin: 0 0 22px -30px;
+    padding: 10px 45px 10px 25px;
+
+    /* Шрифты и типографика */
+    font-size: 1.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+
+    /* Цвета и свечение */
+    color: var(--sw-gold);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--sw-gold) 50%, transparent);
+    background: linear-gradient(90deg,
+        color-mix(in srgb, var(--sw-neon-blue) 8%, transparent) 0%,
+        color-mix(in srgb, var(--sw-neon-blue) 2%, transparent) 60%,
+        transparent 100%
+    );
+    box-shadow: inset 10px 0 20px color-mix(in srgb, var(--sw-neon-blue) 8%, transparent);
+
+    /* Границы и скругления */
+    border-bottom: 1px solid color-mix(in srgb, var(--sw-neon-blue) 35%, transparent);
+    border-right: 1px solid color-mix(in srgb, var(--sw-neon-blue) 35%, transparent);
+    border-bottom-right-radius: 6px;
+}
+/**
+ * Вертикальный лазерный маркер заголовка статьи.
+ */
+.detail-article-title::before {
+    /* Отображение и позиционирование */
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+
+    /* Геометрия */
+    width: 4px;
+
+    /* Цвета, фон и свечение */
+    background: var(--sw-neon-blue);
+    box-shadow: 0 0 8px color-mix(in srgb, var(--sw-neon-blue) 60%, transparent);
+
+    /* Скругления */
+    border-top-left-radius: 4px;
+}
+/**
+ * Технический маркер-точка заголовка статьи.
+ */
+.detail-article-title::after {
+    /* Отображение и позиционирование */
+    content: "";
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    /* Геометрия */
+    width: 3px;
+    height: 3px;
+
+    /* Цвета, фон и свечение */
+    background: rgba(0, 168, 204, 0.5);
+    box-shadow: 0 0 6px rgba(0, 168, 204, 0.8);
+
+    /* Скругления */
+    border-radius: 50%;
+}
+
+
+/* ==========================================================================
+   4. МОБИЛЬНЫЙ АДАПТИВ
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /**
+     * Адаптация верхнего контейнера элементов.
+     */
+    .detail-top-row {
+        /* Перестроение флекс-сетки в вертикальный стек */
+        flex-direction: column;
+    }
+
+    /**
+     * Адаптация главного аватара объекта.
+     */
+    .detail-avatar {
+        /* Центрирование блока по оси мобильного экрана */
+        margin: 0 auto;
+    }
+
+    /**
+     * Адаптация карточек данных.
+     */
+    .detail-data-card {
+        /* Внутренние отступы */
+        padding: 16px;
+    }
+
+    /**
+     * Адаптация списков крупных блоков.
+     */
+    .detail-block-list {
+        /* Компактные зазоры для мобильных экранов */
+        gap: 16px;
+        margin-top: 20px;
+    }
+
+    /**
+     * Адаптация строчных карточек параметров.
+     */
+    .detail-row-card {
+        /* Перестроение грид-сетки в одну вертикальную колонку */
+        grid-template-columns: 1fr;
+        row-gap: 12px;
+
+        /* Компактные отступы для мобильных экранов */
+        padding: 12px 16px;
+    }
+
+    /**
+     * Адаптация заголовочного отсека строчной карточки.
+     */
+    .detail-row-header {
+        /* Системное выравнивание контента */
+        justify-content: center;
+
+        /* Сброс границ и отступов */
+        border-right: none;
+        padding-right: 0;
+
+        /* Мобильные границы и отступы */
+        padding-bottom: 10px;
+        border-bottom: 1px solid color-mix(in srgb, var(--sw-neon-blue) 15%, transparent);
+    }
+
+     /**
+     * Адаптация горизонтального ряда элементов.
+     */
+    .detail-flex-row {
+        /* Перестроение флекс-сетки в вертикальный стек */
+        flex-direction: column;
+    }
+
+    /**
+     * Адаптация контентных колонок.
+     */
+    .detail-grid-column {
+        /* Сброс распределения ширины */
+        flex: none;
+    }
+
+    /**
+     * Адаптация контейнера статьи.
+     */
+    .detail-article-block {
+        /* Геометрия и внешние отступы */
+        margin-bottom: 1.5rem;
+
+        /* Внутренние боковые отступы */
+        padding-right: 15px;
+        padding-left: 15px;
+    }
+    /**
+     * Адаптация обертки изображения CKEditor внутри панели статьи.
+     */
+    .detail-article-block .ck-content figure.image {
+        /* Сброс обтекания */
+        float: none;
+
+        /* Геометрия и отступы */
+        width: 100%;
+        margin: 15px 0 20px 0;
+    }
+    /**
+     * Адаптация изображения внутри обертки CKEditor.
+     */
+    .detail-article-block .ck-content figure.image img {
+        /* Границы и скругления */
+        border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 35%, transparent);
+        border-radius: 4px;
+    }
+
+    /**
+     * Адаптация заголовка-плашки статьи.
+     */
+    .detail-article-title {
+        /* Мобильные внешние отступы */
+        margin-left: -15px;
+
+        /* Мобильные внутренние отступы */
+        padding-right: 30px;
+        padding-left: 15px;
+
+        /* Мобильная типографика */
+        font-size: 1.05rem;
+    }
+}

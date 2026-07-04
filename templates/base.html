@@ -1,34 +1,41 @@
 <!DOCTYPE html>
+{% load static %}
 <html lang="ru" translate="no">
 <head>
+    <!-- Системные метаданные и параметры масштабирования -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Star Wars Wiki{% endblock %}</title>
 
-    {% load static %}
+    <!-- Мета-заголовок документа базы данных по умолчанию -->
+    <title>{% block title %}Квидухаб.GAMES | Справочник{% endblock %}</title>
+
+    <!-- Подключение глобального ядра стилей -->
     <link rel="stylesheet" href="{% static 'css/global.css' %}">
-    <style>
-    </style>
+
+    <!-- Слот для подключения локальных модулей стилей конкретных страниц -->
+    {% block page_css %}{% endblock %}
 </head>
 <body>
-    <nav class="sw-navbar">
+    <!-- Глобальная навигационная панель интерфейса -->
+    <nav class="navbar">
         <div class="navbar-container">
-            <!-- Логотип справочника слева (на мобильных он встанет рядом с кнопкой) -->
+            <!-- Системный логотип и корневой якорь базы данных -->
             <a href="/" class="nav-logo">Квидухаб.GAMES</a>
 
-            <!-- Скрытый чекбокс-триггер для открытия меню -->
-            <input type="checkbox" id="menu-toggle" class="menu-toggle-checkbox">
+            <!-- Интерфейсный триггер состояния мобильного меню -->
+            <input type="checkbox" id="menu-toggle" class="menu-toggle-checkbox" aria-hidden="true">
 
-            <!-- Кнопка-гамбургер (лейбл для чекбокса) -->
+            <!-- Графический маркер управления интерфейсным триггером -->
             <label for="menu-toggle" class="menu-hamburger">
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
                 <span class="hamburger-line"></span>
             </label>
 
+            <!-- Контейнер навигационных узлов интерфейса -->
             <div class="nav-menu">
                 <a href="#" class="nav-link">Главная</a>
-                <a href="{% url 'wiki:race_list' %}" class="nav-link active">Расы</a>
+                <a href="{% url 'wiki:race_list' %}" class="nav-link {% if 'race' in request.resolver_match.url_name %}active{% endif %}">Расы</a>
                 <a href="#" class="nav-link">Классы</a>
                 <a href="#" class="nav-link">Сила</a>
                 <a href="#" class="nav-link">Снаряжение</a>
@@ -37,7 +44,10 @@
             </div>
         </div>
     </nav>
+
+    <!-- Основной контентный фрейм документа -->
     <main class="main-container">
+        <!-- Слот для динамического контента Django-шаблонов -->
         {% block content %}{% endblock %}
     </main>
 </body>
