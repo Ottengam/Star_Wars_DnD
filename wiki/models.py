@@ -218,6 +218,7 @@ class SkillChoices(models.TextChoices):
     """Временный список d20-навыков SWTOR для жесткого выбора без создания таблиц"""
     # === СИЛА (STR) ===
     ATHLETICS = 'athletics', 'Атлетика'
+    BRAWLING = 'brawling', 'Рукопашный бой'
     WEAPON_MELEE_HEAVY = 'weapon_melee_heavy', 'Ударное оружие'
     WEAPON_MELEE_BLADES = 'weapon_melee_blades', 'Клинковое оружие'
 
@@ -276,7 +277,6 @@ class Race(models.Model):
 
     :cvar name: Название расы (вида), лимит 25 символов.
     :cvar description: Историческая справка расы.
-    :cvar name_plural_genitive: Название расы (вида) во множественном числе родительном падеже.
     :cvar names: Краткое описание того, как раса формирует имена.
     :cvar male_names: Список доступных мужских имён.
     :cvar female_names: Список доступных женских имён.
@@ -322,8 +322,6 @@ class Race(models.Model):
 
     name: str = models.CharField(max_length=25, verbose_name="Название расы")
     description: str = models.TextField(verbose_name="Описание расы")
-    name_plural_genitive: str = models.CharField(max_length=30, blank=True, null=True,
-                                                 verbose_name="Имя во мн. ч. (родительный падеж)")
 
     quote: str = models.TextField(verbose_name="Цитата")
     quote_author: str = models.CharField(max_length=40, verbose_name="Автор цитаты")
@@ -362,7 +360,7 @@ class Race(models.Model):
 
     fixed_skills = MultiSelectField(max_length=255, choices=SkillChoices.choices, blank=True,
                                     verbose_name="Фиксированные навыки")
-    choice_skills = MultiSelectField(max_length=255, choices=SkillChoices.choices, blank=True,
+    choice_skills = MultiSelectField(max_length=500, choices=SkillChoices.choices, blank=True,
                                      verbose_name="Навыки на выбор")
     skills_choice_count = models.PositiveIntegerField(default=0, verbose_name="Количество навыков на выбор",
                                                       help_text="Количество навыков, которые нужно выбрать")
@@ -373,6 +371,13 @@ class Race(models.Model):
     weight_range: str = models.CharField(max_length=30, blank=True, verbose_name="Вес")
 
     speed: int = models.PositiveIntegerField(default=30, verbose_name="Базовая скорость (в футах)")
+
+    starting_equipment = models.TextField(
+        "Стартовое снаряжение (временно текстом)",
+        blank=True,  # Разрешает оставлять форму пустой в админке
+        null=True,  # Разрешает записывать NULL в базу данных
+        help_text="Оставьте пустым, если у расы нет стартовых предметов"
+    )
 
     # Связь со справочником программных особенностей (RaceTrait)
     traits: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Trait', blank=True,

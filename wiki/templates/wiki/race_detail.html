@@ -109,6 +109,16 @@
         </div>
     {% endif %}
 
+    <!-- Компонент стартового снаряжения (требуется доработка)-->
+    {% if race.starting_equipment %}
+        <div class="detail-data-card">
+            <h3 class="detail-card-title">Стартовое снаряжение</h3>
+            <div class="detail-block-list">
+                <div class="detail-card-lead">{{ race.starting_equipment|linebreaksbr }}</div>
+            </div>
+        </div>
+    {% endif %}
+
     <!-- Компонент панели традиций именования и ономастики -->
     <div class="detail-data-card">
         <h2 class="detail-card-title">Имена и традиции именования</h2>

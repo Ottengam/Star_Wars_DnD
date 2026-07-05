@@ -44,6 +44,7 @@
     width: 100%;
     max-width: 320px;
     height: 100%;
+    max-height: 450px;
 
     /* Границы и скругления */
     border-radius: 8px;
@@ -624,7 +625,7 @@
 
     /* Геометрия и внешние отступы */
     width: 252px;
-    margin: -66px -30px 5px 14px;
+    margin: -67px -30px 5px 14px;
 }
 /**
  * Изображение внутри обертки CKEditor.
