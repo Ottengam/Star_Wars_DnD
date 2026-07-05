@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-+xt51m5wlu71&k!lrap=xdnljngc9mz)x+_v%f+v+lau3!udf%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -33,6 +33,8 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -67,10 +69,9 @@ WSGI_APPLICATION = 'starwars_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'db.sqlite3')),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
@@ -119,6 +120,10 @@ MEDIA_URL = '/media/'
 # Путь к папке media
 MEDIA_ROOT = BASE_DIR / 'media'
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+WHITENOISE_KEEP_FILES_ON_REMOTE_PROVIDER = True
+
 # Путь внутри media/, куда CKEditor 5 будет сохранять побочные картинки из текста
 CKEDITOR_5_UPLOAD_FILE_VIEW_NAME = "django_ckeditor_5:upload_file"
 
@@ -147,3 +152,7 @@ CKEDITOR_5_CONFIGS = {
         }
     }
 }
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
