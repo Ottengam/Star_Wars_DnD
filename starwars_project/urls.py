@@ -14,7 +14,9 @@ urlpatterns = [
     path('ckeditor5/', include('django_ckeditor_5.urls')),
 
     # Локальный модуль навигации и детализации объектов справочника (Вики)
-    path('wiki/', include('wiki.urls', namespace='wiki')),
+    path('wiki/', include('wiki.urls')),
+
+    path('mechanics/', include('mechanics.urls')),
 ]
 
 # Раздача пользовательских медиафайлов в локальном режиме разработки

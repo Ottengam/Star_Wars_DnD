@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- Мета-заголовок документа с указанием текущей вселенной базы данных -->
+{% block title %}Руководство | Star Wars | Квидухаб.GAMES{% endblock %}
+
+<!-- Подключение локальных модулей стилей страницы списков -->
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/datapad.css' %}">
+    <link rel="stylesheet" href="{% static 'css/object-list.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="datapad-header">
+    <!-- Презентационный заголовок раздела базы правил -->
+    <h1 class="datapad-header-title">Книга игрока</h1>
+    <p class="datapad-header-subtitle">Справочник правил и механик вселенной</p>
+</div>
+
+<!-- Контейнер итерации карточек объектов -->
+<div class="datapad-body">
+    <!-- Итератор Django: обход массива разделов Книги игрока из базы данных -->
+    {% for section in sections %}
+        <div class="ol-card">
+
+            <!-- Компонент графического контейнера карточки -->
+            <div class="ol-card-image">
+                <img src="{{ section.icon.url }}" alt="{{ section.title }}" class="ol-img">
+            </div>
+
+            <!-- Компонент информационного контейнера карточки -->
+            <div class="ol-card-info">
+                <h2 class="ol-card-title">
+                    <!-- Системный якорь перехода к разделу характеристик -->
+                    <a href="{% url 'mechanics:rule_detail' section.slug %}" class="ol-stretched-link">
+                        {{ section.title }}
+                    </a>
+                </h2>
+
+                <!-- Компонент текстового блока описания сущности -->
+                <div class="ol-card-body">
+                    {{ section.description }}
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <!-- Системное уведомление при отсутствии записей разделов в таблице базы данных -->
+        <div class="empty-warning">
+            <p>Данные терминала недоступны. Записи правил отсутствуют в базе данных.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

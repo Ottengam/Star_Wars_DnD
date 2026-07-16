@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<!-- Мета-заголовок документа с указанием имени объекта и вселенной -->
+{% block title %}{{ section.title }} | Механика: Star Wars | Квидухаб.GAMES{% endblock %}
+
+<!-- Подключение локальных модулей стилей страницы детализации -->
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/datapad.css' %}">
+    <link rel="stylesheet" href="{% static 'css/object-detail.css' %}">
+{% endblock %}
+
+{% block content %}
+<!-- Презентационный заголовок раздела -->
+<div class="datapad-header">
+    <h1 class="datapad-header-title">{{ section.title }}</h1>
+    <p class="datapad-header-subtitle">Реестр базовых параметров существ и их практических навыков</p>
+</div>
+
+<!-- Контейнер детальной карточки объекта -->
+<div class="datapad-body">
+    <!-- Панель общих правил терминала характеристик -->
+    <div class="detail-top-row">
+        <div class="detail-data-card">
+            <h3 class="detail-card-title">Базовые правила</h3>
+
+            {% for rule_block in section.general_rules %}
+                {% if rule_block.type == "wide_rule" %}
+                    <div class="detail-article-block">
+                        <h4 class="detail-article-title">{{ rule_block.title }}</h4>
+                        <p class="detail-article-text">{{ rule_block.description|linebreaksbr }}</p>
+                        {% if rule_block.formula %}
+                            <div class="detail-accent-block">{{ rule_block.formula | safe }}</div>
+                        {% endif %}
+                        {% if rule_block.footnote %}
+                            <p class="detail-article-text">{{ rule_block.footnote|linebreaksbr }}</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <div class="detail-top-row">
+                {% for rule_block in section.general_rules %}
+                    {% if rule_block.type != "wide_rule" %}
+
+                        <div class="detail-data-card">
+                            <h3 class="detail-card-title">{{ rule_block.title }}</h3>
+                            <p class="detail-article-text">{{ rule_block.description|linebreaksbr }}</p>
+
+                            <!-- ЕСЛИ ТАБЛИЧНАЯ КАРТОЧКА (Классы Сложности) -->
+                            {% if rule_block.type == "table_card" %}
+                                <div class="detail-data-list">
+                                    {% for row in rule_block.table_data %}
+                                        <div class="detail-data-row">
+                                            <span>{{ row.label }}:</span>
+                                            <strong>{{ row.value }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% if rule_block.footnote %}
+                                <p class="detail-article-text">{{ rule_block.footnote|linebreaksbr }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Сетка характеристик -->
+    <div class="detail-data-card">
+        <h3 class="detail-card-title">Характеристики</h3>
+
+        <div class="detail-block-list">
+
+        {% for code, data in grouped_skills.items %}
+            <!-- Карточка характеристики -->
+            <div class="detail-row-card">
+
+                <!-- 1. Главный заголовок -->
+                <div class="detail-row-header">
+                    <div class="detail-grid-column">
+                        <span class="detail-column-label">{{ data.name }}</span>
+                        <div class="detail-column-stack">
+                            <p>{{ data.description }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Чистый список привязанных навыков -->
+                <div class="detail-data-list">
+                    {% for skill in data.skills %}
+                        <div class="detail-stack-row">
+                            <div class="detail-stack-title"><a href="#" class="db-link">{{ skill.name }}</a></div>
+                            <p class="detail-stack-desc">{{ skill.description }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </div>
+        {% endfor %}
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

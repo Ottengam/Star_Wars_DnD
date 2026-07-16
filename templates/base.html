@@ -34,13 +34,13 @@
 
             <!-- Контейнер навигационных узлов интерфейса -->
             <div class="nav-menu">
-                <a href="#" class="nav-link">Главная</a>
+                <a href="{% url 'home' %}" class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}">Главная</a>
                 <a href="{% url 'wiki:race_list' %}" class="nav-link {% if 'race' in request.resolver_match.url_name %}active{% endif %}">Расы</a>
                 <a href="#" class="nav-link">Классы</a>
                 <a href="#" class="nav-link">Сила</a>
                 <a href="#" class="nav-link">Снаряжение</a>
-                <a href="#" class="nav-link">Планеты</a>
-                <a href="#" class="nav-link">Техника</a>
+                <a href="#" class="nav-link">Галактика</a>
+                <a href="{% url 'mechanics:rules_hub' %}" class="nav-link {% if request.resolver_match.url_name in 'rules_hub rule_detail' %}active{% endif %}">Руководство</a>
             </div>
         </div>
     </nav>

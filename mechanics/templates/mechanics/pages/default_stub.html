@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ section.title }} | Данные засекречены{% endblock %}
+
+{% block page_css %}
+    <link rel="stylesheet" href="{% static 'css/datapad.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="datapad-stub-container" style="text-align: center; padding: 100px 20px;">
+    <img src="{{ section.icon.url }}" alt="Заблокировано" style="width: 120px; margin-bottom: 30px;">
+    <h1 style="color: #ff4444; font-family: monospace;">● ДОСТУП ОГРАНИЧЕН: {{ section.title|upper }}</h1>
+    <p style="opacity: 0.7; max-width: 600px; margin: 20px auto; line-height: 1.6;">
+        {{ section.description }}
+    </p>
+    <div style="border-top: 1px dashed rgba(255,255,255,0.2); width: 200px; margin: 30px auto;"></div>
+    <p style="font-size: 0.9em; color: var(--accent-color, #00adff);">Протоколы сектора находятся на этапе дешифрации пакета обновлений 2026 года.</p>
+</div>
+{% endblock %}

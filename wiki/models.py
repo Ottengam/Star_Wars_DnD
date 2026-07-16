@@ -258,7 +258,7 @@ class SkillChoices(models.TextChoices):
     INSIGHT = 'insight', 'Проницательность'
     SURVIVAL = 'survival', 'Выживание'
 
-    # Скрытый боевой навык Мудрости (Стили меча для магов-форсьюзеров)
+    # Скрытый боевой навык Мудрости (Стили меча для форсьюзеров)
     FORM_6_NIMAN = 'form_6_niman', 'Форма VI: Ниман'
     FORCE_POWER = 'force_power', 'Применение Силы'
 
@@ -362,6 +362,12 @@ class Race(models.Model):
                                     verbose_name="Фиксированные навыки")
     choice_skills = MultiSelectField(max_length=500, choices=SkillChoices.choices, blank=True,
                                      verbose_name="Навыки на выбор")
+    fixed_skills_t: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Skill', blank=True,
+                                                                                     related_name="fixed_in_classes",
+                                                                                     verbose_name="Фиксированные навыки")
+    choice_skills_t: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Skill', blank=True,
+                                                                                      related_name="choice_in_classes",
+                                                                                      verbose_name="Навыки на выбор")
     skills_choice_count = models.PositiveIntegerField(default=0, verbose_name="Количество навыков на выбор",
                                                       help_text="Количество навыков, которые нужно выбрать")
 
@@ -372,14 +378,9 @@ class Race(models.Model):
 
     speed: int = models.PositiveIntegerField(default=30, verbose_name="Базовая скорость (в футах)")
 
-    starting_equipment = models.TextField(
-        "Стартовое снаряжение (временно текстом)",
-        blank=True,  # Разрешает оставлять форму пустой в админке
-        null=True,  # Разрешает записывать NULL в базу данных
-        help_text="Оставьте пустым, если у расы нет стартовых предметов"
-    )
+    starting_equipment = models.TextField("Стартовое снаряжение (временно текстом)", blank=True, null=True,
+                                          help_text="Оставьте пустым, если у расы нет стартовых предметов")
 
-    # Связь со справочником программных особенностей (RaceTrait)
     traits: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Trait', blank=True,
                                                                              related_name="races",
                                                                              verbose_name="Особенности механики")
@@ -393,6 +394,13 @@ class Race(models.Model):
         return self.name
 
     class Meta:
+        """
+        Мета-настройки для управления поведением таблицы в Django и СУБД.
+
+        :cvar verbose_name: Локализованное имя сущности в единственном числе.
+        :cvar verbose_name_plural: Локализованное имя сущности во множественном числе.
+        :cvar ordering: Поле, по которому применяется автоматическая сортировка.
+        """
         verbose_name = "Раса"
         verbose_name_plural = "Расы"
         ordering = ['name']
