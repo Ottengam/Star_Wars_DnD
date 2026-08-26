@@ -19,38 +19,60 @@
 
 <!-- Контейнер детальной карточки объекта -->
 <div class="datapad-body">
-    <!-- Панель общих правил терминала характеристик -->
+
+    <!-- Адаптивный горизонтальный ряд для верхних компонентов интерфейса -->
     <div class="detail-top-row">
+        <!-- Универсальный изолированный компонент карточки базовых правил -->
         <div class="detail-data-card">
+            <!-- Локальный заголовок группы параметров карточки -->
             <h3 class="detail-card-title">Базовые правила</h3>
 
+            <!-- Итератор Django: обход массива блоков правил из контекста -->
             {% for rule_block in section.general_rules %}
+                <!-- Условный блок Django: проверка на широкий формат отображения статьи -->
                 {% if rule_block.type == "wide_rule" %}
+                    <!-- Блок текстовой статьи во всю ширину карточки -->
                     <div class="detail-article-block">
+                        <!-- Локальный заголовок текстовой статьи -->
                         <h4 class="detail-article-title">{{ rule_block.title }}</h4>
+                        <!-- Текстовый абзац статьи с автоматическим переносом строк -->
                         <p class="detail-article-text">{{ rule_block.description|linebreaksbr }}</p>
+
+                        <!-- Условный блок Django: вывод формулы при её наличии -->
                         {% if rule_block.formula %}
+                            <!-- Выделенный блок для отображения формул или системного кода -->
                             <div class="detail-accent-block">{{ rule_block.formula | safe }}</div>
                         {% endif %}
+
+                        <!-- Условный блок Django: вывод сноски при её наличии -->
                         {% if rule_block.footnote %}
+                            <!-- Текстовый абзац сноски или сервисного примечания -->
                             <p class="detail-article-text">{{ rule_block.footnote|linebreaksbr }}</p>
                         {% endif %}
                     </div>
                 {% endif %}
             {% endfor %}
 
+            <!-- Внутренний адаптивный ряд для компактных карточек правил -->
             <div class="detail-top-row">
+                <!-- Итератор Django: повторный обход для поиска компактных блоков -->
                 {% for rule_block in section.general_rules %}
+                    <!-- Условный блок Django: исключение широких статей из текущей сетки -->
                     {% if rule_block.type != "wide_rule" %}
-
+                        <!-- Вложенный компонент карточки для отдельного правила -->
                         <div class="detail-data-card">
+                            <!-- Локальный заголовок карточки правила -->
                             <h3 class="detail-card-title">{{ rule_block.title }}</h3>
+                            <!-- Текстовый абзац описания правила -->
                             <p class="detail-article-text">{{ rule_block.description|linebreaksbr }}</p>
 
-                            <!-- ЕСЛИ ТАБЛИЧНАЯ КАРТОЧКА (Классы Сложности) -->
+                            <!-- Условный блок Django: проверка на наличие табличного контента -->
                             {% if rule_block.type == "table_card" %}
-                                <div class="detail-data-list">
+                                <!-- Функциональный вертикальный стек для упорядочивания строк таблицы -->
+                                <div class="detail-vertical-stack">
+                                    <!-- Итератор Django: обход массива строк текущей таблицы -->
                                     {% for row in rule_block.table_data %}
+                                        <!-- Строка таблицы со статическим ключом и динамическим значением -->
                                         <div class="detail-data-row">
                                             <span>{{ row.label }}:</span>
                                             <strong>{{ row.value }}</strong>
@@ -59,7 +81,9 @@
                                 </div>
                             {% endif %}
 
+                            <!-- Условный блок Django: вывод сноски компактного правила -->
                             {% if rule_block.footnote %}
+                                <!-- Текстовый абзац сноски компактного правила -->
                                 <p class="detail-article-text">{{ rule_block.footnote|linebreaksbr }}</p>
                             {% endif %}
                         </div>
@@ -69,40 +93,52 @@
         </div>
     </div>
 
-    <!-- Сетка характеристик -->
+    <!-- Универсальный изолированный компонент карточки для вывода сетки параметров -->
     <div class="detail-data-card">
+        <!-- Локальный заголовок группы параметров карточки -->
         <h3 class="detail-card-title">Характеристики</h3>
 
+        <!-- Компонент вертикального стека параметров верхнего уровня -->
         <div class="detail-block-list">
 
-        {% for code, data in grouped_skills.items %}
-            <!-- Карточка характеристики -->
-            <div class="detail-row-card">
+            <!-- Итератор Django: обход сгруппированного массива параметров из контекста -->
+            {% for code, data in grouped_skills.items %}
+                <!-- Компонент горизонтальной строки-карточки для одной группы параметров -->
+                <div class="detail-row-card">
 
-                <!-- 1. Главный заголовок -->
-                <div class="detail-row-header">
-                    <div class="detail-grid-column">
-                        <span class="detail-column-label">{{ data.name }}</span>
-                        <div class="detail-column-stack">
-                            <p>{{ data.description }}</p>
+                    <!-- Шапка строки-карточки для вывода главного заголовка группы -->
+                    <div class="detail-row-header">
+                        <!-- Компонент вертикального стека текстовых блоков -->
+                        <div class="detail-grid-column">
+                            <!-- Текстовая метка названия текущей группы параметров -->
+                            <span class="detail-column-label">{{ data.name }}</span>
+                            <!-- Внутренний вертикальный стек для описания группы -->
+                            <div class="detail-column-stack">
+                                <!-- Текстовый узел с описанием текущей группы -->
+                                <p>{{ data.description }}</p>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <!-- 3. Чистый список привязанных навыков -->
-                <div class="detail-data-list">
-                    {% for skill in data.skills %}
-                        <div class="detail-stack-row">
-                            <div class="detail-stack-title"><a href="#" class="db-link">{{ skill.name }}</a></div>
-                            <p class="detail-stack-desc">{{ skill.description }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
+                    <!-- Функциональный вертикальный стек для вывода списка вложенных элементов -->
+                    <div class="detail-vertical-stack">
+                        <!-- Итератор Django: обход массива связанных элементов группы -->
+                        {% for skill in data.skills %}
+                            <!-- Изолированная контентная строка для одного вложенного элемента -->
+                            <div class="detail-stack-row">
+                                <!-- Блок заголовка элемента с интерактивной ссылкой перехода -->
+                                <div class="detail-stack-title">
+                                    <a href="{% url 'mechanics:skill_perks' skill_id=skill.id %}" class="db-link">{{ skill.name }}</a>
+                                </div>
+                                <!-- Текстовый узел с кратким описанием вложенного элемента -->
+                                <p class="detail-stack-desc">{{ skill.description }}</p>
+                            </div>
+                        {% endfor %}
+                    </div>
 
-            </div>
-        {% endfor %}
+                </div>
+            {% endfor %}
         </div>
-
     </div>
 
 </div>

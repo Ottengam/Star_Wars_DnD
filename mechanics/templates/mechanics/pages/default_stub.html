@@ -1,20 +1,64 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<!-- Мета-заголовок документа с сервисным статусом засекреченных данных -->
 {% block title %}{{ section.title }} | Данные засекречены{% endblock %}
 
 {% block page_css %}
+    <!-- Локальный модуль стилей для макета интерфейса Datapad -->
     <link rel="stylesheet" href="{% static 'css/datapad.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="datapad-stub-container" style="text-align: center; padding: 100px 20px;">
-    <img src="{{ section.icon.url }}" alt="Заблокировано" style="width: 120px; margin-bottom: 30px;">
-    <h1 style="color: #ff4444; font-family: monospace;">● ДОСТУП ОГРАНИЧЕН: {{ section.title|upper }}</h1>
-    <p style="opacity: 0.7; max-width: 600px; margin: 20px auto; line-height: 1.6;">
-        {{ section.description }}
-    </p>
-    <div style="border-top: 1px dashed rgba(255,255,255,0.2); width: 200px; margin: 30px auto;"></div>
-    <p style="font-size: 0.9em; color: var(--accent-color, #00adff);">Протоколы сектора находятся на этапе дешифрации пакета обновлений 2026 года.</p>
+<!-- ЛОКАЛЬНЫЕ МЕДИА-ЗАПРОСЫ ДЛЯ АДАПТАЦИИ ПОДЛОЖКИ НА МОБИЛЬНЫХ УСТРОЙСТВАХ -->
+<style>
+    /* Базовые стили подложки для десктопной версии справочника */
+    .stub-wrapper {
+        background-color: rgba(10, 14, 23, 0.93);
+        padding: 60px 40px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 68, 68, 0.15); /* Легкий красный оттенок рамки в цвет ошибки */
+        margin-top: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+    }
+
+    /* Оптимизация полей и отступов под экраны мобильных телефонов */
+    @media (max-width: 768px) {
+        .stub-wrapper {
+            padding: 40px 16px;
+            margin-top: 10px;
+        }
+    }
+</style>
+
+<!-- ГЛАВНЫЙ КОНТЕЙНЕР-ПОДЛОЖКА: Создает плотную темную основу для изоляции текста от яркого фона -->
+<div class="stub-wrapper">
+
+    <!-- Изолированный контейнер сервисной заглушки терминала данных -->
+    <div class="datapad-stub-container" style="text-align: center;">
+
+        <!-- Графический компонент заблокированного состояния из базы данных -->
+        <img src="{{ section.icon.url }}" alt="Заблокировано" style="width: 120px; max-width: 100%; height: auto; margin-bottom: 24px;">
+
+        <!-- Системный текстовый заголовок ошибки ограничения доступа -->
+        <h1 style="color: #ff4444; font-family: monospace; font-size: 1.8rem; margin: 0 0 16px 0; font-weight: 700;">
+            ● ДОСТУП ОГРАНИЧЕН: {{ section.title|upper }}
+        </h1>
+
+        <!-- Текстовый блок системного описания причин блокировки раздела -->
+        <p style="opacity: 0.7; max-width: 600px; margin: 0 auto; line-height: 1.6; color: #ffffff; font-size: 1rem;">
+            {{ section.description }}
+        </p>
+
+        <!-- Пунктирный строковый элемент для визуального отделения системных логов -->
+        <div style="border-top: 1px dashed rgba(255, 255, 255, 0.15); width: 200px; margin: 24px auto;"></div>
+
+        <!-- Конечный строковый элемент сервисного сообщения дешифрации протоколов -->
+        <p style="font-size: 0.9rem; color: var(--accent-color, #00adff); margin: 0; font-family: monospace;">
+            Протоколы сектора находятся на этапе дешифрации пакета обновлений 2026 года.
+        </p>
+
+    </div>
+
 </div>
 {% endblock %}

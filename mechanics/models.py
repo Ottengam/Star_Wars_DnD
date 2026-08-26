@@ -43,6 +43,7 @@ class Skill(models.Model):
     :cvar attribute: Текстовый маркер базовой характеристики.
     :cvar name: Уникальное название навыка, лимит 40 символов.
     :cvar description: Текстовое описание правил применения навыка в игре.
+    :cvar image: Иконка навыка, загружаемая в изолированную директорию медиа-хранилища.
     """
 
     class AttributeMarker(models.TextChoices):
@@ -59,6 +60,7 @@ class Skill(models.Model):
     attribute: str = models.CharField(max_length=3, choices=AttributeMarker.choices, verbose_name="Характеристика")
     name: str = models.CharField(max_length=40, unique=True, verbose_name="Название")
     description: str = models.TextField(verbose_name="Описание навыка")
+    image = models.ImageField(upload_to="mechanics/skills/", blank=True, null=True, verbose_name="Иллюстрация навыка")
 
     # Подсказка для IDE
     get_attribute_display: callable

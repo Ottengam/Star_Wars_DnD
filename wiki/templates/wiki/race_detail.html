@@ -30,7 +30,7 @@
         <!-- Компонент таблицы игровых модификаторов характеристик -->
         <div class="detail-data-card">
             <h3 class="detail-card-title">Характеристики</h3>
-            <div class="detail-data-list">
+            <div class="detail-vertical-stack">
                 <div class="detail-data-row"><span>Сила:</span> <strong class="{% if race.str_bonus > 0 %}pos{% elif race.str_bonus < 0 %}neg{% endif %}">{% if race.str_bonus > 0 %}+{% endif %}{{ race.str_bonus }}</strong></div>
                 <div class="detail-data-row"><span>Ловкость:</span> <strong class="{% if race.dex_bonus > 0 %}pos{% elif race.dex_bonus < 0 %}neg{% endif %}">{% if race.dex_bonus > 0 %}+{% endif %}{{ race.dex_bonus }}</strong></div>
                 <div class="detail-data-row"><span>Телосложение:</span> <strong class="{% if race.con_bonus > 0 %}pos{% elif race.con_bonus < 0 %}neg{% endif %}">{% if race.con_bonus > 0 %}+{% endif %}{{ race.con_bonus }}</strong></div>
@@ -43,7 +43,7 @@
         <!-- Компонент таблицы физиологических и географических данных -->
         <div class="detail-data-card">
             <h3 class="detail-card-title">Физиология и Родина</h3>
-            <div class="detail-data-list">
+            <div class="detail-vertical-stack">
                 <div class="detail-data-row"><span>Размер:</span> <strong>{{race.get_size_display}}</strong></div>
                 <div class="detail-data-row"><span>Скорость:</span> <strong>{{race.speed}} футов</strong></div>
                 <div class="detail-data-row"><span>Рост:</span> <strong>{{race.height_range}}</strong></div>

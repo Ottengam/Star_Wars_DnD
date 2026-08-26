@@ -1,15 +1,105 @@
 {% extends 'base.html' %}
+{% load static %}
 
+<!-- Мета-заголовок документа для корневой страницы базы данных -->
 {% block title %}Квидухаб.GAMES | Главная{% endblock %}
 
 {% block content %}
-<div style="text-align: center; padding: 100px 20px; color: #fff;">
-    <h1 style="font-size: 36px; margin-bottom: 20px; color: #ffc107;">Добро пожаловать в Квидухаб.GAMES!</h1>
-    <p style="font-size: 18px; max-width: 600px; margin: 0 auto 30px auto; line-height: 1.6; color: #cccccc;">
-        Интерактивный d20-справочник по вселенной Звездных Войн (SWTOR) полностью развернут и готов к игре.
-    </p>
-    <p style="font-size: 16px; color: #888;">
-        Используйте верхнее меню навигации, чтобы открыть раздел <strong>«Расы»</strong> и изучить асимметричный баланс персонажей.
-    </p>
+<!-- ЛОКАЛЬНЫЕ МЕДИА-ЗАПРОСЫ ДЛЯ СТИЛИЗАЦИИ МОБИЛЬНОЙ ВЕРСИИ ЧЕРНОВИКА -->
+<style>
+    /* Базовые стили для десктопной версии по умолчанию */
+    .home-container {
+        background-color: rgba(10, 14, 23, 0.93);
+        padding: 40px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        margin-top: 20px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.7);
+    }
+    .home-main-title {
+        font-size: 2.8rem;
+        color: #ffc107;
+        margin: 0 0 16px 0;
+        font-family: sans-serif;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(255, 193, 7, 0.3);
+        word-wrap: break-word;
+    }
+
+    /* Адаптивные стили для мобильных телефонов и планшетов */
+    @media (max-width: 768px) {
+        .home-container {
+            padding: 24px 16px; /* Оптимизируем боковые отступы, чтобы контент не зажимался */
+            margin-top: 10px;
+        }
+        .home-main-title {
+            font-size: 1.8rem; /* Уменьшаем шрифт, чтобы название проекта не ломало контейнер */
+            line-height: 1.3;
+        }
+    }
+</style>
+
+<!-- ГЛАВНЫЙ КОНТЕЙНЕР-ПОДЛОЖКА: Теперь использует адаптивный класс вместо жестких инлайн-стилей -->
+<div class="home-container">
+
+    <!-- Главная презентационная карточка для центрального приветственного блока -->
+    <div style="text-align: center; padding: 20px 0 40px 0; margin-bottom: 32px; border-bottom: 1px solid rgba(255, 255, 255, 0.1);">
+        <!-- Текстовый узел главного приветственного заголовка с адаптивным классом -->
+        <h1 class="home-main-title">
+            Добро пожаловать в Квидухаб.GAMES!
+        </h1>
+        <!-- Основной текстовый блок с системной аннотацией проекта -->
+        <p style="font-size: 1.05rem; color: #e0e0e0; max-width: 750px; margin: 0 auto; line-height: 1.6;">
+            Интерактивный d20-справочник полностью развернут, синхронизирован с механиками базы данных и готов к обеспечению игрового процесса.
+        </p>
+    </div>
+
+    <!-- АДАПТИВНАЯ ГОРИЗОНТАЛЬНАЯ СЕТКА: На десктопе выстраивает блоки в ряд, на мобильном — в один столбец -->
+    <div style="display: flex; flex-wrap: wrap; gap: 24px; width: 100%;">
+
+        <!-- Компонент карточки модуля «Игровое руководство» -->
+        <div style="flex: 1 1 calc(50% - 12px); min-width: 280px; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #00d2ff; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; box-shadow: inset 0 0 15px rgba(0, 210, 255, 0.05);">
+            <div>
+                <!-- Локальный заголовок модуля механик -->
+                <h3 style="font-size: 1.4rem; margin: 0 0 16px 0; color: #00d2ff; font-family: sans-serif; font-weight: 600;">
+                    Игровое руководство
+                </h3>
+                <!-- Строгий вертикальный столбец для упорядочивания текстовых строк -->
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                    <!-- Текстовые узлы с описанием возможностей раздела -->
+                    <span style="font-size: 0.95rem; color: #cccccc; line-height: 1.4;">✔ Базовые системные правила и формулы расчета.</span>
+                    <span style="font-size: 0.95rem; color: #cccccc; line-height: 1.4;">✔ Полный реестр ключевых характеристик существ.</span>
+                    <span style="font-size: 0.95rem; color: #cccccc; line-height: 1.4;">✔ Интерактивные деревья развития практических навыков.</span>
+                </div>
+            </div>
+            <!-- Интерактивная ссылка перехода к хабу правил -->
+            <a href="{% url 'mechanics:rules_hub' %}" class="nav-link active" style="text-align: center; padding: 12px; display: block; background-color: rgba(0, 210, 255, 0.1); border: 1px solid #00d2ff; border-radius: 4px; color: #ffffff; text-decoration: none; font-weight: 600;">
+                Открыть руководство
+            </a>
+        </div>
+
+        <!-- Компонент карточки модуля «Галактические расы» -->
+        <div style="flex: 1 1 calc(50% - 12px); min-width: 280px; background-color: rgba(0, 0, 0, 0.4); border: 1px solid #39ff14; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; justify-content: space-between; box-sizing: border-box; box-shadow: inset 0 0 15px rgba(57, 255, 20, 0.05);">
+            <div>
+                <!-- Локальный заголовок модуля рас -->
+                <h3 style="font-size: 1.4rem; margin: 0 0 16px 0; color: #39ff14; font-family: sans-serif; font-weight: 600;">
+                    Галактические расы
+                </h3>
+                <!-- Строгий вертикальный столбец для упорядочивания текстовых строк -->
+                <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px;">
+                    <!-- Текстовые узлы с описанием возможностей раздела -->
+                    <span style="font-size: 0.95rem; color: #cccccc; line-height: 1.4;">✔ Подробный реестр обитателей и существ галактики.</span>
+                    <span style="font-size: 0.95rem; color: #cccccc; line-height: 1.4;">✔ Асимметричные модификаторы физических параметров.</span>
+                    <span style="font-size: 0.95rem; color: #cccccc; line-height: 1.4;">✔ Физиологические особенности и стартовые навыки выбора.</span>
+                </div>
+            </div>
+            <!-- Интерактивная ссылка перехода к списку рас -->
+            <a href="{% url 'wiki:race_list' %}" class="nav-link active" style="text-align: center; padding: 12px; display: block; background-color: rgba(57, 255, 20, 0.1); border: 1px solid #39ff14; border-radius: 4px; color: #ffffff; text-decoration: none; font-weight: 600;">
+                Изучить расы
+            </a>
+        </div>
+
+    </div>
+
 </div>
 {% endblock %}

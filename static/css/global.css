@@ -52,7 +52,8 @@
     --sw-neon-blue: #00d2ff;
     --sw-deep-blue: #0055ff;
     --sw-neon-green: #39ff14;
-    --sw-neon-red: #ff3131;
+    --sw-neon-red: #ff001e;
+    --sw-neon-cyan: #00f5d4;
     --sw-orange-glow: #ff7700;
     --sw-amber-glow: #ffb421;
 
@@ -354,7 +355,7 @@ body {
    8. МОБИЛЬНЫЙ АДАПТИВ
    ========================================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 810px) {
     /**
      * Адаптация отображения документа.
      */

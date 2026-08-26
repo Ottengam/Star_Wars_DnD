@@ -1,6 +1,5 @@
 from django.views.generic import ListView, DetailView
-from .models import RuleSection, Skill, Perk
-from django.shortcuts import get_object_or_404
+from .models import RuleSection, Skill
 
 
 class RulesHubView(ListView):
@@ -57,26 +56,101 @@ class RuleDetailView(DetailView):
         return context
 
 
-class SkillPerksDetailView(ListView):
+class SkillPerksDetailView(DetailView):
     """
-    Контроллер третьего уровня для отображения древа перков талантов конкретного навыка.
-    Использует системные классы Datapad-интерфейса.
+    Контроллер третьего уровня для отображения древа перков конкретного навыка.
     """
-    model = Perk
-    template_name = 'mechanics/skill_perks.html'
-    context_object_name = 'perks'
+    model = Skill
+    template_name = 'mechanics/pages/skill_perks.html'
+    context_object_name = 'skill'
+    pk_url_kwarg = 'skill_id'
 
     def get_queryset(self):
-        # Исправляет ошибку №3: используем локальную переменную вместо self.skill
-        skill_id = self.kwargs['skill_id']
-        skill_obj = get_object_or_404(Skill, id=skill_id)
-
-        # Исправляет ошибку №2: добавляем # noqa в конце строки
-        return Perk.objects.filter(skill=skill_obj).prefetch_related('required_perks').order_by( # noqa
-            'required_skill_level')
+        # Оптимизируем запрос без ручных get_object_or_404
+        return super().get_queryset().prefetch_related('perks__required_perks')
 
     def get_context_data(self, **kwargs):
+        def _to_roman(val):
+            """Вспомогательный d20-конвертер чисел в римские цифры."""
+            roman_map = {1: 'I', 2: 'II', 3: 'III', 4: 'IV', 5: 'V', 6: 'VI'}
+            return roman_map.get(val, str(val))
+
         context = super().get_context_data(**kwargs)
-        # Повторно извлекаем объект для контекста шаблона, чтобы не нарушать архитектуру классов
-        context['skill'] = get_object_or_404(Skill, id=self.kwargs['skill_id'])
+
+        from mechanics.constants import SKILL_PROGRESSION_MILESTONES
+        context['progression_milestones'] = SKILL_PROGRESSION_MILESTONES
+
+        perks_by_tier = {1: [], 2: [], 3: [], 4: []}
+        all_perks = self.object.perks.all().order_by('required_skill_level', 'name')
+
+        # Шаг 1: Вычисляем ранг и НАЗНАЧАЕМ СИСТЕМНЫЙ ЦВЕТ ИЗ ВАШЕГО :ROOT
+        for perk in all_perks:
+            if perk.required_skill_level == 15:
+                perk.computed_tier = 4
+                perk.tier_color = "var(--sw-neon-red)"  # Мастер (Красный)
+            elif 10 <= perk.required_skill_level <= 14:
+                perk.computed_tier = 3
+                perk.tier_color = "var(--sw-orange-glow)"  # Эксперт (Оранжевый)
+            elif 5 <= perk.required_skill_level <= 9:
+                perk.computed_tier = 2
+                perk.tier_color = "var(--sw-neon-green)"  # Специалист (Зеленый)
+            else:
+                perk.computed_tier = 1
+                perk.tier_color = "var(--sw-neon-blue)"  # Новичок (Синий)
+
+        # Шаг 2: На основе вычисленных рангов и цветов строим карту d20-требований
+        for perk in all_perks:
+            # ЗАМЕНЯЕМ СОКРАЩЕНИЕ МАКС НА КРАСИВОЕ СЛОВОФОРМИРОВАНИЕ "Х уровня"
+            if perk.max_levels > 1:
+                perk.display_max_levels = f"Максимум {_to_roman(perk.max_levels)}"
+            else:
+                perk.display_max_levels = ""
+
+            # Парсим JSON-описание построчно
+            lines = perk.description if isinstance(perk.description, list) else []
+            perk_effects = []
+
+            if len(lines) <= 1:
+                text = lines[0] if lines else ""
+                if text.startswith("Уровень 1:"):
+                    text = text.replace("Уровень 1:", "").strip()
+                perk_effects.append({"is_multilevel": False, "level_marker": "", "text": text})
+            else:
+                for index, line in enumerate(lines, start=1):
+                    text = line
+                    prefix = f"Уровень {index}:"
+                    if text.startswith(prefix):
+                        text = text.replace(prefix, "").strip()
+                    perk_effects.append({"is_multilevel": True, "level_marker": str(index), "text": text})
+            perk.formatted_effects = perk_effects
+
+            # УМНЫЙ РАСЧЕТ ТРЕБОВАНИЙ ЧЕРЕЗ РИМСКИЕ ЦИФРЫ БЕЗ ШУМА [X ур.]
+            processed_requirements = []
+            for req in perk.required_perks.all():
+                parent_perk = next((p for p in all_perks if p.id == req.id), None)
+                d20_condition = ""
+
+                if parent_perk and parent_perk.max_levels > 1:
+                    # Если родитель многоуровневый и находится в том же ранге (сосед)
+                    if perk.computed_tier == parent_perk.computed_tier:
+                        d20_condition = f" {_to_roman(1)}"  # Добавляем пробел перед римской I
+                    # Если родитель из ранга ниже — берем его максимальный d20-уровень
+                    else:
+                        d20_condition = f" {_to_roman(parent_perk.max_levels)}"
+
+                # Если parent_perk.max_levels == 1, d20_condition останется пустой строкой "",
+                # что полностью скроет цифры у одноуровневых перков.
+
+                processed_requirements.append({
+                    "name": req.name,
+                    "condition": d20_condition  # Вернет " I", " III" или ""
+                })
+
+            perk.processed_reqs = processed_requirements
+
+            if perk.computed_tier in perks_by_tier:
+                perks_by_tier[perk.computed_tier].append(perk)
+
+        context['perks_by_tier'] = perks_by_tier
+
         return context

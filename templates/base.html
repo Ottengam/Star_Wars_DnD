@@ -40,7 +40,7 @@
                 <a href="#" class="nav-link">Сила</a>
                 <a href="#" class="nav-link">Снаряжение</a>
                 <a href="#" class="nav-link">Галактика</a>
-                <a href="{% url 'mechanics:rules_hub' %}" class="nav-link {% if request.resolver_match.url_name in 'rules_hub rule_detail' %}active{% endif %}">Руководство</a>
+                <a href="{% url 'mechanics:rules_hub' %}" class="nav-link {% if request.resolver_match.url_name in 'rules_hub rule_detail skill_perks' %}active{% endif %}">Руководство</a>
             </div>
         </div>
     </nav>
