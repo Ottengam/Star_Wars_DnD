@@ -62,9 +62,6 @@ class Skill(models.Model):
     description: str = models.TextField(verbose_name="Описание навыка")
     image = models.ImageField(upload_to="mechanics/skills/", blank=True, null=True, verbose_name="Иллюстрация навыка")
 
-    # Подсказка для IDE
-    get_attribute_display: callable
-
     def __str__(self) -> str:
         """
         Превращает сложный объект навыка в понятную текстовую строку для списков.
@@ -164,3 +161,87 @@ class RuleSection(models.Model):
         verbose_name = "Раздел правил"
         verbose_name_plural = "Разделы правил"
         ordering = ['sort_order', 'title']
+
+
+class ConditionCategory(models.Model):
+    """
+    Модель для группировки динамических параметров по типам воздействия.
+
+    :cvar name: Название категории, лимит 50 символов.
+    :cvar description: Сухое инженерное описание общего вектора влияния данной группы.
+    :cvar sort_order: Цифровой индекс для управления приоритетом вывода карточки в цикле.
+    """
+    name: str = models.CharField(max_length=50, unique=True, verbose_name="Название категории")
+    description: str = models.TextField(verbose_name="Описание вектора влияния")
+    sort_order: int = models.PositiveIntegerField(default=0, verbose_name="Порядок сортировки")
+
+    def __str__(self) -> str:
+        """
+        Превращает объект категории в понятную строку для панелей управления.
+
+        :return: Название категории.
+        """
+        return self.name
+
+    class Meta:
+        """
+        Мета-настройки управления таблицей категорий.
+        """
+        verbose_name = "Категория состояний"
+        verbose_name_plural = "Категории состояний"
+        ordering = ['sort_order', 'name']
+
+
+class Condition(models.Model):
+    """
+    Модель для учета динамических статусов и модификаторов параметров.
+
+    :cvar category: Ссылка на родительскую категорию, к которой относится статус.
+    :cvar name: Официальное название статуса, лимит 50 символов.
+    :cvar type_marker: Тип модификатора.
+    :cvar description: Описание статуса.
+    :cvar duration_rule: Лимит времени или временной триггер действия эффекта.
+    :cvar removal_rule: Техническое условие снятия данного маркера.
+    """
+
+    class TypeMarker(models.TextChoices):
+        """
+        Перечисление типов модификаторов для каскадного управления цветом.
+        """
+        NEGATIVE = 'NEG', 'Отрицательный'
+        POSITIVE = 'POS', 'Положительный'
+        NEUTRAL = 'NEU', 'Нейтральный'
+
+    category: ConditionCategory = models.ForeignKey(
+        ConditionCategory,
+        on_delete=models.CASCADE,
+        related_name="conditions",
+        verbose_name="Категория воздействия"
+    )
+    name: str = models.CharField(max_length=50, verbose_name="Название статуса")
+    type_marker: str = models.CharField(
+        max_length=3,
+        choices=TypeMarker.choices,
+        default=TypeMarker.NEUTRAL,
+        verbose_name="Тип модификатора"
+    )
+    description: str = models.TextField(verbose_name="Описание состояния")
+    duration_rule: str = models.CharField(max_length=100, default="1 раунд", verbose_name="Длительность эффекта")
+    removal_rule: str = models.CharField(max_length=150, default="Автоматически", verbose_name="Условие снятия")
+
+    def __str__(self) -> str:
+        """
+        Превращает сложный объект статуса в понятную строку для списков.
+
+        :return: Название статуса.
+        """
+        return self.name
+
+    class Meta:
+        """
+        Мета-настройки для управления поведением таблицы состояний в Django и СУБД.
+        """
+        verbose_name = "Динамический статус"
+        verbose_name_plural = "Динамические статусы"
+        ordering = ['name']
+        unique_together = ('category', 'name')

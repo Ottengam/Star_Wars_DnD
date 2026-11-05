@@ -55,8 +55,7 @@ class RaceTraitAdmin(admin.ModelAdmin):
 class RaceAdmin(admin.ModelAdmin):
     list_display = ('get_image', 'name', 'description', 'homeworld', 'get_d20_stats', 'size', 'speed')
     search_fields = ('name', 'description')
-    filter_horizontal = ('traits', 'colonies', 'enclaves', 'outposts', 'integrated_worlds', 'fixed_skills_t',
-                         'choice_skills_t')
+    filter_horizontal = ('traits', 'colonies', 'enclaves', 'outposts', 'integrated_worlds')
 
     def get_d20_stats(self, obj):
         from django.utils.safestring import mark_safe

@@ -1,0 +1,72 @@
+<!-- Адаптивный горизонтальный ряд для верхних компонентов интерфейса -->
+    <div class="detail-top-row">
+        <!-- Универсальный изолированный компонент карточки базовых правил -->
+        <div class="detail-data-card">
+            <!-- Локальный заголовок группы параметров карточки -->
+            <h3 class="detail-card-title">Базовые правила</h3>
+
+            <!-- Итератор Django: обход массива блоков правил из контекста -->
+            {% for rule_block in section.general_rules %}
+                <!-- Условный блок Django: проверка на широкий формат отображения статьи -->
+                {% if rule_block.type == "wide_rule" %}
+                    <!-- Блок текстовой статьи во всю ширину карточки -->
+                    <div class="detail-article-block">
+                        <!-- Локальный заголовок текстовой статьи -->
+                        <h4 class="detail-article-title">{{ rule_block.title }}</h4>
+                        <!-- Текстовый абзац статьи с автоматическим переносом строк -->
+                        <p class="detail-article-text">{{ rule_block.description|linebreaksbr }}</p>
+
+                        <!-- Условный блок Django: вывод формулы при её наличии -->
+                        {% if rule_block.formula %}
+                            <!-- Выделенный блок для отображения формул или системного кода -->
+                            <div class="detail-accent-block">{{ rule_block.formula | safe }}</div>
+                        {% endif %}
+
+                        <!-- Условный блок Django: вывод сноски при её наличии -->
+                        {% if rule_block.footnote %}
+                            <!-- Текстовый абзац сноски или сервисного примечания -->
+                            <p class="detail-article-text">{{ rule_block.footnote|linebreaksbr }}</p>
+                        {% endif %}
+                    </div>
+                {% endif %}
+            {% endfor %}
+
+            <!-- Внутренний адаптивный ряд для компактных карточек правил -->
+            <div class="detail-top-row">
+                <!-- Итератор Django: повторный обход для поиска компактных блоков -->
+                {% for rule_block in section.general_rules %}
+                    <!-- Условный блок Django: исключение широких статей из текущей сетки -->
+                    {% if rule_block.type != "wide_rule" %}
+                        <!-- Вложенный компонент карточки для отдельного правила -->
+                        <div class="detail-data-card">
+                            <!-- Локальный заголовок карточки правила -->
+                            <h3 class="detail-card-title">{{ rule_block.title }}</h3>
+                            <!-- Текстовый абзац описания правила -->
+                            <p class="detail-article-text">{{ rule_block.description|linebreaksbr }}</p>
+
+                            <!-- Условный блок Django: проверка на наличие табличного контента -->
+                            {% if rule_block.type == "table_card" %}
+                                <!-- Функциональный вертикальный стек для упорядочивания строк таблицы -->
+                                <div class="detail-vertical-stack">
+                                    <!-- Итератор Django: обход массива строк текущей таблицы -->
+                                    {% for row in rule_block.table_data %}
+                                        <!-- Строка таблицы со статическим ключом и динамическим значением -->
+                                        <div class="detail-data-row">
+                                            <span>{{ row.label }}:</span>
+                                            <strong>{{ row.value }}</strong>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <!-- Условный блок Django: вывод сноски компактного правила -->
+                            {% if rule_block.footnote %}
+                                <!-- Текстовый абзац сноски компактного правила -->
+                                <p class="detail-article-text">{{ rule_block.footnote|linebreaksbr }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>

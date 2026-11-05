@@ -362,12 +362,12 @@ class Race(models.Model):
                                     verbose_name="Фиксированные навыки")
     choice_skills = MultiSelectField(max_length=500, choices=SkillChoices.choices, blank=True,
                                      verbose_name="Навыки на выбор")
-    fixed_skills_t: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Skill', blank=True,
-                                                                                     related_name="fixed_in_classes",
-                                                                                     verbose_name="Фиксированные навыки")
-    choice_skills_t: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Skill', blank=True,
-                                                                                      related_name="choice_in_classes",
-                                                                                      verbose_name="Навыки на выбор")
+    #fixed_skills_t: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Skill', blank=True,
+    #                                                                                 related_name="fixed_in_classes",
+    #                                                                                 verbose_name="Фиксированные навыки")
+    #choice_skills_t: models.QuerySet[mechanics.models.Trait] = models.ManyToManyField('mechanics.Skill', blank=True,
+    #                                                                                  related_name="choice_in_classes",
+    #                                                                                  verbose_name="Навыки на выбор")
     skills_choice_count = models.PositiveIntegerField(default=0, verbose_name="Количество навыков на выбор",
                                                       help_text="Количество навыков, которые нужно выбрать")
 

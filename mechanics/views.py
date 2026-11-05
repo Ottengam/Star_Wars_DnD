@@ -24,6 +24,8 @@ class RuleDetailView(DetailView):
         match slug:
             case "attributes":
                 return ["mechanics/pages/attributes.html"]
+            case "conditions":
+                return ["mechanics/pages/conditions.html"]
             case _:
                 # временно отправляем на общую Datapad-заглушку
                 return ["mechanics/pages/default_stub.html"]

@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.db import models
-from .models import Trait, Skill, Perk, RuleSection
+from .models import Trait, Skill, Perk, RuleSection, ConditionCategory, Condition
 from django.utils.safestring import mark_safe
 
 
@@ -79,3 +79,33 @@ class RuleSectionAdmin(admin.ModelAdmin):
 
     # Поля, по которым можно искать разделы через поисковую строку
     search_fields = ('title', 'description')
+
+
+@admin.register(ConditionCategory)
+class ConditionCategoryAdmin(admin.ModelAdmin):
+    """
+    Конфигурация панели управления для категорий состояний.
+    Обеспечивает контроль порядка сортировки групп в терминале.
+    """
+    list_display = ('name', 'sort_order', 'get_short_description')
+    search_fields = ('name', 'description')
+    ordering = ('sort_order', 'name')
+
+    @admin.display(description="Краткое описание")
+    def get_short_description(self, obj):
+        """Ограничивает длину описания категории в общем списке."""
+        if obj.description and len(obj.description) > 75:
+            return f"{obj.description[:75]}..."
+        return obj.description
+
+
+@admin.register(Condition)
+class ConditionAdmin(admin.ModelAdmin):
+    """
+    Конфигурация панели управления для реестра динамических статусов.
+    Обеспечивает группировку по категориям воздействия и типам модификаторов.
+    """
+    list_display = ('name', 'category', 'type_marker', 'duration_rule', 'removal_rule')
+    list_filter = ('category', 'type_marker')
+    search_fields = ('name', 'code_name', 'description')
+    ordering = ('category', 'name')
