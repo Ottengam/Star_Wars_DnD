@@ -758,6 +758,77 @@
     margin-bottom: 8px;
 }
 
+/**
+ * Изолированная таблица реестра с раздельными строками-карточками.
+ */
+.detail-data-table {
+    /* Отображение и геометрия */
+    width: 100%;
+    margin: 0;
+
+    /* Раздельная сетка строк с вертикальным зазором */
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+/**
+ * Универсальный заголовок колонки таблицы.
+ */
+.detail-table-th {
+    /* Геометрия и отступы */
+    padding: 4px 12px;
+
+    /* Шрифты и типографика */
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: left;
+
+    /* Цвета */
+    color: var(--sw-amber-glow);
+    text-shadow: 0 0 8px color-mix(in srgb, var(--sw-amber-glow) 35%, transparent);
+}
+
+/**
+ * Строка-карточка в теле таблицы.
+ */
+.detail-table-row {
+    /* Оформление фона */
+    background: var(--panel-bg-light);
+}
+
+/**
+ * Базовая ячейка таблицы с верхней и нижней границами.
+ */
+.detail-table-td {
+    /* Геометрия и отступы */
+    padding: 16px 12px;
+    vertical-align: top;
+
+    /* Верхняя и нижняя рамки строки */
+    border-top: 1px solid color-mix(in srgb, var(--sw-neon-blue) 12%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--sw-neon-blue) 12%, transparent);
+
+    /* Базовая типографика ячеек */
+    font-size: 0.88rem;
+    line-height: 1.45;
+}
+
+/**
+ * Универсальная левая граница с цветовым индикатором.
+ */
+.detail-marker-border-left {
+    border-left: 3px solid var(--marker-color);
+}
+
+/**
+ * Универсальная правая граница в стиле табличной сетки.
+ */
+.detail-table-border-right {
+    border-right: 1px solid color-mix(in srgb, var(--sw-neon-blue) 12%, transparent);
+}
+
 
 /* ==========================================================================
    3. ТЕКСТОВЫЕ БЛОКИ
@@ -1014,6 +1085,59 @@
     box-shadow: inset 0 0 10px var(--dt-shadow-color);
 }
 
+/**
+ * Акцентный заголовок категории.
+ */
+.detail-category-title {
+    /* Шрифты и типографика */
+    margin: 0 0 12px 0;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1.3;
+
+    /* Цвета и свечение */
+    color: var(--sw-neon-blue);
+    text-shadow: 0 0 10px color-mix(in srgb, var(--sw-neon-blue) 40%, transparent);
+}
+
+/**
+ * Поясняющее описание категории.
+ */
+.detail-category-desc {
+    /* Шрифты и типографика */
+    font-size: 0.85rem;
+    line-height: 1.5;
+
+    /* Умный перенос слов */
+    -webkit-hyphens: auto;
+    hyphens: auto;
+}
+
+/**
+ * Универсальный акцентный цвет текста и верхний регистр на базе --marker-color.
+ */
+.detail-marker-text {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--marker-color);
+}
+
+/**
+ * Универсальный курсивный пункт примечания с автосбросом нижнего отступа.
+ */
+.detail-note-item {
+    margin: 0 0 6px 0;
+    font-style: italic;
+    color: color-mix(in srgb, var(--sw-neon-blue) 70%, transparent);
+    text-shadow: 0 0 6px color-mix(in srgb, var(--sw-neon-blue) 25%, transparent);
+}
+.detail-note-item:last-child {
+    margin-bottom: 0;
+}
+
 
 /* ==========================================================================
    4. ИНТЕРФЕЙСНЫЕ МАРКЕРЫ
@@ -1243,5 +1367,82 @@
 
         /* Мобильная типографика */
         font-size: 1.05rem;
+    }
+
+    /**
+     * Скрытие горизонтальной шапки таблицы на мобильных экранах.
+     */
+    .detail-table-thead {
+        display: none;
+    }
+
+    /**
+     * Вывод заголовка колонки перед контентом на мобильных экранах.
+     */
+    .detail-table-td[data-label]::before {
+        content: attr(data-label);
+        display: block;
+        margin-bottom: 6px;
+        font-size: 0.75rem;
+        font-weight: 700;
+        font-style: normal;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        color: var(--sw-amber-glow);
+        text-shadow: 0 0 8px color-mix(in srgb, var(--sw-amber-glow) 35%, transparent);
+        opacity: 0.85;
+    }
+
+    /**
+     * Перевод таблицы из табличного режима в обычный блочный контейнер.
+     */
+    .detail-data-table {
+        display: block;
+        border-spacing: 0;
+    }
+
+    /**
+     * Перевод тела таблицы в блочный режим для корректного растяжения карточек.
+     */
+    .detail-table-body {
+        display: block;
+        width: 100%;
+    }
+
+        /**
+     * Превращение строки таблицы в вертикальную карточку с единым контуром.
+     */
+    .detail-table-row {
+        display: block;
+        width: 100%;
+        margin-bottom: 12px;
+        padding: 14px;
+        border: 1px solid color-mix(in srgb, var(--sw-neon-blue) 12%, transparent);
+        border-left: 3px solid var(--marker-color);
+        border-radius: 4px;
+    }
+    .detail-table-row:last-child {
+        margin-bottom: 0;
+    }
+
+    /**
+     * Перестроение ячеек в вертикальный список без внутренних рамок.
+     */
+    .detail-table-td {
+        display: block;
+        width: 100%;
+        padding: 0 0 10px 0;
+        border: none;
+    }
+    .detail-table-td:last-child {
+        padding-bottom: 0;
+    }
+
+    /**
+     * Сброс боковых рамок ячеек при переходе в карточный вид.
+     */
+    .detail-marker-border-left,
+    .detail-table-border-right {
+        border: none;
     }
 }

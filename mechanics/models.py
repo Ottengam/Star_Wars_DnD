@@ -227,7 +227,7 @@ class Condition(models.Model):
     )
     description: str = models.TextField(verbose_name="Описание состояния")
     duration_rule: str = models.CharField(max_length=100, default="1 раунд", verbose_name="Длительность эффекта")
-    removal_rule: str = models.CharField(max_length=150, default="Автоматически", verbose_name="Условие снятия")
+    removal_rule: str = models.JSONField(default=list, verbose_name="Условие снятия")
 
     def __str__(self) -> str:
         """
@@ -236,6 +236,17 @@ class Condition(models.Model):
         :return: Название статуса.
         """
         return self.name
+
+    @property
+    def marker_css_var(self) -> str:
+        """Возвращает CSS-переменную цвета в зависимости от типа маркера."""
+        match self.type_marker:
+            case self.TypeMarker.NEGATIVE:
+                return "var(--sw-neon-red)"
+            case self.TypeMarker.POSITIVE:
+                return "var(--sw-neon-green)"
+            case _:
+                return "var(--sw-gold)"
 
     class Meta:
         """

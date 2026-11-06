@@ -1,5 +1,5 @@
 from django.views.generic import ListView, DetailView
-from .models import RuleSection, Skill
+from .models import RuleSection, Skill, ConditionCategory
 
 
 class RulesHubView(ListView):
@@ -54,6 +54,10 @@ class RuleDetailView(DetailView):
                 }
 
             context['grouped_skills'] = grouped_skills
+
+        elif self.object.slug == 'conditions':
+            # Подтягиваем категории и сразу все связанные с ними статусы за 1 дополнительный запрос
+            context['categories'] = ConditionCategory.objects.prefetch_related('conditions').all()
 
         return context
 

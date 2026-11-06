@@ -22,147 +22,90 @@
     <!-- Подключение универсального компонента основных правил -->
     {% include 'mechanics/pages/general_rules_block.html' %}
 
-    <!-- ГЛОБАЛЬНЫЙ КОНТЕЙНЕР РЕЕСТРА (Атмосферный макет терминала данных) -->
-<div style="border: 1px solid #101f35; padding: 25px; background-color: rgba(6, 10, 18, 0.6); margin-top: 30px; font-family: sans-serif; box-shadow: inset 0 0 20px rgba(0, 229, 255, 0.05);">
+    <div class="detail-data-card">
+        <!-- Локальный заголовок группы параметров карточки -->
+        <h2 class="detail-card-title">Список состояний</h2>
 
-    <!-- Главный заголовок реестра -->
-    <h2 style="color: #ffe81f; text-transform: uppercase; font-size: 13px; letter-spacing: 4px; margin-top: 0; margin-bottom: 30px; border-bottom: 2px solid #101f35; padding-bottom: 12px; display: flex; align-items: center; gap: 10px;">
-        <span style="color: #00e5ff;">//</span> РЕЕСТР ДИНАМИЧЕСКИХ СТАТУСОВ И МОДИФИКАТОРОВ
-    </h2>
+        <div class="detail-block-list">
+            <!-- Итератор Django: обход сгруппированного массива категорий состояний из контекста -->
+            {% for cat in categories %}
+            <div class="detail-row-card">
 
-    <!-- КАТЕГОРИЯ 1: ПОДВИЖНОСТЬ -->
-    <div style="display: flex; flex-direction: row; margin-bottom: 45px; gap: 30px; align-items: flex-start;">
+                <!-- Левая колонка: Информация о категории -->
+                <div class="detail-row-header">
+                    <div class="detail-vertical-stack">
+                        <h3 class="detail-category-title">
+                            {{ cat.name }}
+                        </h3>
+                        <div class="detail-category-desc">
+                            {{ cat.description }}
+                        </div>
+                    </div>
+                </div>
 
-        <!-- Паспорт категории (Левый блок) -->
-        <div style="width: 22%; min-width: 190px; flex-shrink: 0; position: relative;">
-            <div style="position: absolute; left: 0; top: 0; width: 3px; height: 15px; background-color: #4fc3f7;"></div>
-            <h3 style="color: #4fc3f7; text-transform: uppercase; margin-top: 0; margin-bottom: 10px; font-size: 15px; letter-spacing: 1.5px; padding-left: 10px;">
-                Подвижность
-            </h3>
-            <p style="font-size: 12px; color: #8a99ad; line-height: 1.6; margin: 0; padding-left: 10px;">
-                Модификаторы кинетической активности, лимиты перемещения и координации моторных функций существа.
-            </p>
+                <!-- Правая колонка: Список статусов этой категории -->
+                <table class="detail-data-table">
+
+                    <!-- Единая шапка -->
+                    <thead class="detail-table-thead">
+                        <tr>
+                            <th class="detail-table-th" style="width: 15%;">Название</th>
+                            <th class="detail-table-th" style="width: 40%;">Описание</th>
+                            <th class="detail-table-th" style="width: 13%;">Длительность</th>
+                            <th class="detail-table-th" style="width: 32%;">Условие снятия</th>
+                        </tr>
+                    </thead>
+
+                    <tbody class="detail-table-body">
+                        <!-- Итератор Django: обход сгруппированного массива состояний из текущей категории -->
+                        {% for condition in cat.conditions.all %}
+                        <tr class="detail-table-row" style="--marker-color: {{ condition.marker_css_var }};">
+
+                            <!-- 1. Название статуса -->
+                            <td class="detail-table-td detail-marker-border-left detail-marker-text">
+                                {{ condition.name }}
+                            </td>
+
+                            <!-- 2. Описание состояния -->
+                            <td class="detail-table-td">
+                                {{ condition.description }}
+                            </td>
+
+                            <!-- 3. Длительность -->
+                            <td class="detail-table-td">
+                                <span class="detail-marker-badge" style="--marker-color: var(--sw-neon-cyan);">
+                                    {{ condition.duration_rule|upper }}
+                                </span>
+                            </td>
+
+                            <!-- 4. Список условий снятия -->
+                            <td class="detail-table-td detail-table-border-right" data-label="Условие снятия:">
+                                {% for rule in condition.removal_rule %}
+                                    <p class="detail-note-item">• {{ rule }}</p>
+                                {% endfor %}
+                            </td>
+
+                        </tr>
+
+                        {% empty %}
+                        <tr class="detail-table-row" style="--marker-color: var(--sw-neon-blue);">
+                            <td colspan="4" class="detail-table-td detail-marker-border-left detail-table-border-right">
+                                <p class="detail-note-item">В этой категории пока нет зарегистрированных системных маркеров.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% empty %}
+            <p class="detail-note-item">Реестр динамических статусов пуст.</p>
+            {% endfor %}
         </div>
 
-        <!-- Стек статусных модулей (Правый блок) -->
-        <div style="width: 78%; display: flex; flex-direction: column; gap: 12px;">
-
-            <!-- Единая техническая шапка параметров для группы -->
-            <div style="display: grid; grid-template-columns: 160px 1fr 140px 180px; gap: 20px; padding: 0 15px 8px 15px; font-size: 10px; color: #4fc3f7; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; opacity: 0.8;">
-                <div>Системный маркер</div>
-                <div>Протокол действия / Штрафы</div>
-                <div>Длительность</div>
-                <div style="text-align: right;">Условие снятия</div>
-            </div>
-
-            <!-- Статус 1: Оглушение (Деструктивный) -->
-            <div style="display: grid; grid-template-columns: 160px 1fr 140px 180px; gap: 20px; padding: 15px; background-color: rgba(16, 31, 53, 0.25); border: 1px solid #101f35; border-left: 4px solid #ff9100; align-items: center;">
-                <!-- Имя -->
-                <div style="font-weight: bold; text-transform: uppercase; color: #ff9100; font-size: 13px; letter-spacing: 0.5px;">
-                    Оглушение
-                </div>
-                <!-- Регламент -->
-                <div style="font-size: 13px; color: #d0d7de; line-height: 1.5; padding-right: 10px;">
-                    Блокировка любых действий. Бонус Ловкости к КЗ падает до <span style="color: #ff9100;">0</span>. Входящие атаки получают преимущество.
-                </div>
-                <!-- Длительность как мета-тег -->
-                <div>
-                    <span style="font-size: 11px; color: #ffe81f; font-family: monospace; background-color: rgba(255, 232, 31, 0.08); padding: 4px 8px; border: 1px solid rgba(255, 232, 31, 0.2); border-radius: 2px;">
-                        [ T-СЧЕТЧИК: 1 РНД ]
-                    </span>
-                </div>
-                <!-- Нейтрализация -->
-                <div style="font-size: 12px; color: #8a99ad; font-style: italic; text-align: right; font-family: monospace;">
-                    Фаза: конец хода
-                </div>
-            </div>
-
-            <!-- Статус 2: Замедление (Деструктивный) -->
-            <div style="display: grid; grid-template-columns: 160px 1fr 140px 180px; gap: 20px; padding: 15px; background-color: rgba(16, 31, 53, 0.25); border: 1px solid #101f35; border-left: 4px solid #ff9100; align-items: center;">
-                <div style="font-weight: bold; text-transform: uppercase; color: #ff9100; font-size: 13px; letter-spacing: 0.5px;">
-                    Замедление
-                </div>
-                <div style="font-size: 13px; color: #d0d7de; line-height: 1.5; padding-right: 10px;">
-                    Сокращение скорости перемещения на <span style="color: #ff9100;">50%</span>. Штраф <span style="color: #ff9100;">-2</span> к Реакции и атакам ближнего боя.
-                </div>
-                <div>
-                    <span style="font-size: 11px; color: #ffe81f; font-family: monospace; background-color: rgba(255, 232, 31, 0.08); padding: 4px 8px; border: 1px solid rgba(255, 232, 31, 0.2); border-radius: 2px;">
-                        [ ДО МАРКЕРА ГМ ]
-                    </span>
-                </div>
-                <div style="font-size: 12px; color: #8a99ad; font-style: italic; text-align: right;">
-                    Спасбросок Стойкости (КС 12)
-                </div>
-            </div>
-
-        </div>
     </div>
-
-    <!-- КАТЕГОРИЯ 2: МОДИФИКАТОРЫ БОЯ -->
-    <div style="display: flex; flex-direction: row; margin-bottom: 20px; gap: 30px; align-items: flex-start;">
-
-        <!-- Паспорт категории -->
-        <div style="width: 22%; min-width: 190px; flex-shrink: 0; position: relative;">
-            <div style="position: absolute; left: 0; top: 0; width: 3px; height: 15px; background-color: #4fc3f7;"></div>
-            <h3 style="color: #4fc3f7; text-transform: uppercase; margin-top: 0; margin-bottom: 10px; font-size: 15px; letter-spacing: 1.5px; padding-left: 10px;">
-                Боевой статус
-            </h3>
-            <p style="font-size: 12px; color: #8a99ad; line-height: 1.6; margin: 0; padding-left: 10px;">
-                Временные эффекты изменения концентрации, точности или применения стимуляторов.
-            </p>
-        </div>
-
-        <!-- Стек статусных модулей -->
-        <div style="width: 78%; display: flex; flex-direction: column; gap: 12px;">
-
-            <div style="display: grid; grid-template-columns: 160px 1fr 140px 180px; gap: 20px; padding: 0 15px 8px 15px; font-size: 10px; color: #4fc3f7; text-transform: uppercase; font-weight: bold; letter-spacing: 2px; opacity: 0.8;">
-                <div>Системный маркер</div>
-                <div>Протокол действия / Бонусы</div>
-                <div>Длительность</div>
-                <div style="text-align: right;">Условие снятия</div>
-            </div>
-
-            <!-- Статус 3: Боевой кураж (Бенефициарный / Положительный) -->
-            <div style="display: grid; grid-template-columns: 160px 1fr 140px 180px; gap: 20px; padding: 15px; background-color: rgba(16, 31, 53, 0.25); border: 1px solid #101f35; border-left: 4px solid #00e5ff; align-items: center;">
-                <div style="font-weight: bold; text-transform: uppercase; color: #00e5ff; font-size: 13px; letter-spacing: 0.5px;">
-                    Боевой кураж
-                </div>
-                <div style="font-size: 13px; color: #d0d7de; line-height: 1.5; padding-right: 10px;">
-                    Преимущество на проверку Инициативы. Игнорирование штрафов за укрытия малой плотности при дальней стрельбе.
-                </div>
-                <div>
-                    <span style="font-size: 11px; color: #00e5ff; font-family: monospace; background-color: rgba(0, 229, 255, 0.05); padding: 4px 8px; border: 1px solid rgba(0, 229, 255, 0.2); border-radius: 2px;">
-                        [ T-СЧЕТЧИК: 3 РНД ]
-                    </span>
-                </div>
-                <div style="font-size: 12px; color: #8a99ad; font-style: italic; text-align: right; font-family: monospace;">
-                    Истечение таймера
-                </div>
-            </div>
-
-            <!-- Статус 4: Перегрузка систем (Ситуативный / Нейтральный) -->
-            <div style="display: grid; grid-template-columns: 160px 1fr 140px 180px; gap: 20px; padding: 15px; background-color: rgba(16, 31, 53, 0.25); border: 1px solid #101f35; border-left: 4px solid #ffe81f; align-items: center;">
-                <div style="font-weight: bold; text-transform: uppercase; color: #ffe81f; font-size: 13px; letter-spacing: 0.5px;">
-                    Перегрузка систем
-                </div>
-                <div style="font-size: 13px; color: #d0d7de; line-height: 1.5; padding-right: 10px;">
-                    Увеличение урона энергетического оружия на <span style="color: #00e5ff;">+4</span>. Нанесение <span style="color: #ff9100;">2 ед.</span> термического урона себе в начале хода.
-                </div>
-                <div>
-                    <span style="font-size: 11px; color: #ffe81f; font-family: monospace; background-color: rgba(255, 232, 31, 0.08); padding: 4px 8px; border: 1px solid rgba(255, 232, 31, 0.2); border-radius: 2px;">
-                        [ ПОСТОЯННО ПРИ СИСТЕМЕ ]
-                    </span>
-                </div>
-                <div style="font-size: 12px; color: #8a99ad; font-style: italic; text-align: right;">
-                    Ремонт / Техника (КС 15)
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-</div>
-
 
 </div>
 {% endblock %}

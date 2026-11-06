@@ -105,7 +105,16 @@ class ConditionAdmin(admin.ModelAdmin):
     Конфигурация панели управления для реестра динамических статусов.
     Обеспечивает группировку по категориям воздействия и типам модификаторов.
     """
-    list_display = ('name', 'category', 'type_marker', 'duration_rule', 'removal_rule')
+    list_display = ('name', 'category', 'type_marker', 'duration_rule', 'formatted_description')
     list_filter = ('category', 'type_marker')
     search_fields = ('name', 'code_name', 'description')
     ordering = ('category', 'name')
+
+    @admin.display(description="Условия снятия")
+    def formatted_description(self, obj):
+        html_paragraphs = "".join(
+            f"<p style='margin: 0 0 6px 0; line-height: 1.4;'>{line}</p>"
+            for line in obj.removal_rule
+        )
+
+        return mark_safe(html_paragraphs)

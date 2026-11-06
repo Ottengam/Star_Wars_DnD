@@ -39,13 +39,15 @@
                     <!-- Шапка строки-карточки для вывода главного заголовка группы -->
                     <div class="detail-row-header">
                         <!-- Компонент вертикального стека текстовых блоков -->
-                        <div class="detail-grid-column">
+                        <div class="detail-vertical-stack">
                             <!-- Текстовая метка названия текущей группы параметров -->
-                            <span class="detail-column-label">{{ data.name }}</span>
+                            <h3 class="detail-category-title">
+                                {{ data.name }}
+                            </h3>
                             <!-- Внутренний вертикальный стек для описания группы -->
-                            <div class="detail-column-stack">
+                            <div class="detail-category-desc">
                                 <!-- Текстовый узел с описанием текущей группы -->
-                                <p>{{ data.description }}</p>
+                                {{ data.description }}
                             </div>
                         </div>
                     </div>
